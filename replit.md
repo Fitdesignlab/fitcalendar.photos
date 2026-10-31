@@ -1,6 +1,6 @@
-# [Project name]
+# Fit Calendar Photos
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Event photo discovery for races, padel nights, and festivals. Source of truth: https://github.com/Fitdesignlab/fitcalendar.photos on `main`.
 
 ## Run & Operate
 
@@ -30,11 +30,16 @@ _Populate as you build — non-obvious choices a reader couldn't infer from the 
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- The Photos web application serves `/`; `/event/:eventId` must work on direct navigation and refresh.
+- Google and Apple sign-in are explicitly requested demo stubs, not production authentication. Only public sample imagery is used.
+- Downloads require demo sign-in. `PAYMENTS_ENABLED` stays `false`; Ziina remains inactive.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Black and white, Reelmark-style hero; Fit Calendar F-mark only in the header, no wordmark.
+- H1 exactly: "Your event. Your photos. One place."
+- Subtitle exactly: "Find every shot from the race, the padel night, or the festival, then download them after you sign in."
+- Do not add "free" to the subtitle.
 
 ## Gotchas
 

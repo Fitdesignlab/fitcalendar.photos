@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Fit Calendar Photos"
+description = "Find event photos from races, padel nights and festivals. A black and white photo discovery site with demo sign-in-gated downloads and inactive payments."
+version = "1.0.0"
+id = "artifacts/fitcalendar-photos"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 19117
+
+[services.development]
+run = "pnpm --filter @workspace/fitcalendar-photos run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/fitcalendar-photos", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/fitcalendar-photos/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19117"
+BASE_PATH = "/"
