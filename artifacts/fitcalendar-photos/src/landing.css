@@ -1,17 +1,17 @@
-.lp { background: #fff; color: #101410; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+.lp { background: #fff; color: #000; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
 .lp-stage { position: relative; height: 100dvh; overflow: hidden; }
 .lp-frame { position: absolute; left: 50%; top: 50%; width: 1440px; height: 1080px; transform-origin: center center; }
 .lp-abs { position: absolute; }
 .lp-home img { filter: brightness(0); }
 .lp-pill { display: inline-flex; align-items: center; justify-content: center; border-radius: 999px; font: 500 15px/1 'Inter', sans-serif; transition: transform .2s cubic-bezier(.2,.7,.1,1), background-color .2s, opacity .2s; }
-.lp-pill:focus-visible, .lp-cta:focus-visible, .carousel:focus-visible, .carousel-dl:focus-visible, .lp-home:focus-visible { outline: 2px solid #101410; outline-offset: 3px; }
+.lp-pill:focus-visible, .lp-cta:focus-visible, .carousel:focus-visible, .carousel-dl:focus-visible, .lp-home:focus-visible { outline: 2px solid #000; outline-offset: 3px; }
 .lp-pill:active, .lp-cta:active { transform: scale(.97); }
-.lp-login { background: #fff; color: #101410; border: 1px solid #E3E3E3; }
-.lp-login:hover { border-color: #101410; }
+.lp-login { background: #fff; color: #000; border: 1px solid #E3E3E3; }
+.lp-login:hover { border-color: #000; }
 .lp-signup { background: #0A0A0A; color: #fff; }
 .lp-signup:hover { opacity: .85; }
-.lp-badge { display: inline-flex; align-items: center; border-radius: 999px; background: #F5F5F5; border: 1px solid #E8E8E8; color: #101410; font-weight: 500; white-space: nowrap; }
-.lp-h1 { font-family: 'Inter Tight', 'Inter', sans-serif; font-weight: 700; letter-spacing: -0.035em; color: #101410; text-align: center; margin: 0; }
+.lp-badge { display: inline-flex; align-items: center; border-radius: 999px; background: #F5F5F5; border: 1px solid #E8E8E8; color: #000; font-weight: 500; white-space: nowrap; }
+.lp-h1 { font-family: 'Inter Tight', 'Inter', sans-serif; font-weight: 700; letter-spacing: -0.035em; color: #000; text-align: center; margin: 0; }
 .lp-h1 span { display: block; }
 .lp-sub { color: #5E5E61; text-align: center; }
 .lp-hand { font-family: 'Caveat', cursive; font-weight: 600; color: #0A0A0A; white-space: nowrap; line-height: 1; }
