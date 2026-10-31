@@ -8,16 +8,23 @@ router = "path"
 
 [[services]]
 name = "web"
-paths = [ "/" ]
+paths = ["/"]
 localPort = 19117
 
 [services.development]
 run = "pnpm --filter @workspace/fitcalendar-photos run dev"
 
 [services.production]
-build = [ "pnpm", "--filter", "@workspace/fitcalendar-photos", "run", "build" ]
 serve = "static"
 publicDir = "artifacts/fitcalendar-photos/dist/public"
+
+[services.production.build]
+args = ["pnpm", "--filter", "@workspace/fitcalendar-photos", "run", "build"]
+
+[services.production.build.env]
+NODE_ENV = "production"
+PORT = "19117"
+BASE_PATH = "/"
 
 [[services.production.rewrites]]
 from = "/*"

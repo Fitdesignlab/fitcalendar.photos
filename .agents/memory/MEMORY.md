@@ -1,0 +1,1 @@
+- [Publishing verification](publishing-verification.md) — distinguish a working Photos preview from the older API-only published build.
