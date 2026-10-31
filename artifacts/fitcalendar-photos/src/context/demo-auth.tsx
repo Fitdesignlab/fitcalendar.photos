@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+import { useLocation } from 'wouter';
 import { downloadPhoto } from '@/lib/download';
 import type { EventPhoto } from '@/lib/events';
 import { useToast } from '@/hooks/use-toast';
@@ -11,7 +12,7 @@ interface Ctx {
   user: DemoUser | null;
   dialogOpen: boolean;
   pending: PendingDownload | null;
-  openSignIn: () => void;
+  openSignIn: (opts?: { redirectTo?: string }) => void;
   closeSignIn: () => void;
   signIn: (p: DemoProvider) => void;
   signOut: () => void;
@@ -29,6 +30,8 @@ export function DemoAuthProvider({ children }: { children: ReactNode }) {
   });
   const [dialogOpen, setDialogOpen] = useState(false);
   const [pending, setPending] = useState<PendingDownload | null>(null);
+  const [, navigate] = useLocation();
+  const redirectRef = useRef<string | null>(null);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const toastRef = useRef(toast);
   toastRef.current = toast;
@@ -50,19 +53,22 @@ export function DemoAuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const requestDownload = useCallback((photo: EventPhoto, eventId: string) => {
-    if (!user) { setPending({ photo, eventId }); setDialogOpen(true); return; }
+    if (!user) { redirectRef.current = null; setPending({ photo, eventId }); setDialogOpen(true); return; }
     void run(photo, eventId);
   }, [user, run]);
 
   const signIn = useCallback((provider: DemoProvider) => {
     setUser({ provider, name: provider === 'google' ? 'Demo runner (Google)' : 'Demo runner (Apple)' });
     setDialogOpen(false);
+    const to = redirectRef.current;
+    redirectRef.current = null;
     setPending((p) => {
       if (p) setTimeout(() => void run(p.photo, p.eventId), 120);
+      else if (to) setTimeout(() => navigate(to), 0);
       return null;
     });
     toastRef.current({ title: 'Signed in for this session', description: 'Demo sign-in only. Nothing was sent anywhere.' });
-  }, [run]);
+  }, [run, navigate]);
 
   const signOut = useCallback(() => {
     setUser(null);
@@ -72,8 +78,8 @@ export function DemoAuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthCtx.Provider value={{
       user, dialogOpen, pending, downloadingId,
-      openSignIn: () => setDialogOpen(true),
-      closeSignIn: () => { setDialogOpen(false); setPending(null); },
+      openSignIn: (opts) => { redirectRef.current = opts?.redirectTo ?? null; setPending(null); setDialogOpen(true); },
+      closeSignIn: () => { redirectRef.current = null; setDialogOpen(false); setPending(null); },
       signIn, signOut, requestDownload,
     }}>
       {children}

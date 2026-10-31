@@ -40,12 +40,12 @@ export default function EventPage() {
   return (
     <div className="min-h-[100dvh]">
       <SiteHeader />
-      <section className="grain relative overflow-hidden bg-[#0f0e0d] text-[#f4f1ec]">
+      <section className="grain relative overflow-hidden bg-[#0a0a0a] text-[#ffffff]">
         <img src={photoUrl(event.cover)} alt="" aria-hidden className="slowzoom absolute inset-0 h-full w-full object-cover opacity-45 grayscale" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0f0e0d] to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent" />
         <div className="relative mx-auto max-w-[1400px] px-5 pb-12 pt-20 md:px-10 md:pt-32">
           <Link href="/" data-testid="link-all-events" className="inline-flex items-center gap-2 font-mono-ui text-[11px] uppercase text-white/65 hover:text-white"><ArrowLeft className="h-3.5 w-3.5" /> All events</Link>
-          <p className="rise mt-8 font-mono-ui text-[11px] uppercase"><span className="text-[#ea4a1f]">{CATEGORY_LABEL[event.category]}</span> <span className="text-white/60">/ {event.city} / {formatDate(event.date)} / Example event</span></p>
+          <p className="rise mt-8 font-mono-ui text-[11px] uppercase"><span className="text-[#ffffff]">{CATEGORY_LABEL[event.category]}</span> <span className="text-white/60">/ {event.city} / {formatDate(event.date)} / Example event</span></p>
           <h1 className="rise mt-3 font-display text-5xl font-semibold leading-[0.92] md:text-8xl" data-testid="text-event-name">{event.name}</h1>
           <p className="rise mt-4 max-w-xl text-white/70">{event.blurb}</p>
         </div>
@@ -55,7 +55,7 @@ export default function EventPage() {
         {!user && event.photos.length > 0 && (
           <div className="mb-8 flex flex-col gap-3 rounded-sm border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-muted-foreground">Browse everything. Sign in (demo) to download full-size files.</p>
-            <button onClick={openSignIn} data-testid="button-banner-signin" className="rounded-full bg-primary px-4 py-2 text-sm text-primary-foreground hover:opacity-90">Sign in</button>
+            <button onClick={() => openSignIn()} data-testid="button-banner-signin" className="rounded-full bg-primary px-4 py-2 text-sm text-primary-foreground hover:opacity-90">Sign in</button>
           </div>
         )}
         {event.photos.length === 0 ? (

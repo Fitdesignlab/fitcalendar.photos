@@ -5,7 +5,7 @@ import { useDemoAuth } from '@/context/demo-auth';
 
 export function SiteHeader({ overlay = false }: { overlay?: boolean }) {
   const { user, openSignIn, signOut } = useDemoAuth();
-  const tone = overlay ? 'text-[#f4f1ec]' : 'text-foreground';
+  const tone = overlay ? 'text-[#ffffff]' : 'text-foreground';
   return (
     <header className={(overlay ? 'absolute inset-x-0 top-0 z-30 ' : 'sticky top-0 z-30 border-b border-border/70 bg-background/85 backdrop-blur-md ') + tone}>
       <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-5 md:px-10">
@@ -23,8 +23,8 @@ export function SiteHeader({ overlay = false }: { overlay?: boolean }) {
               </button>
             </>
           ) : (
-            <button onClick={openSignIn} data-testid="button-signin"
-              className={'rounded-full px-4 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ' + (overlay ? 'bg-[#f4f1ec] text-[#151311] hover:bg-white' : 'bg-primary text-primary-foreground hover:opacity-90')}>
+            <button onClick={() => openSignIn()} data-testid="button-signin"
+              className={'rounded-full px-4 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ' + (overlay ? 'bg-[#ffffff] text-[#0a0a0a] hover:bg-white' : 'bg-primary text-primary-foreground hover:opacity-90')}>
               Sign in
             </button>
           )}

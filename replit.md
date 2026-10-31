@@ -36,7 +36,9 @@ _Populate as you build — non-obvious choices a reader couldn't infer from the 
 
 ## User preferences
 
-- Black and white, Reelmark-style hero; Fit Calendar F-mark only in the header, no wordmark.
+- White one-screen Reelmark-style landing hero with a curved, draggable sports photo carousel. UI is strictly black, white and neutral grey; full-colour real sports photos are the only colour.
+- Fit Calendar F-mark only in the header, no wordmark or slogan. No em dashes in rendered UI.
+- Landing Log in, Sign up and Get your photos actions open demo provider selection, then go to the event gallery. Gallery download sign-in must still resume its pending download.
 - H1 exactly: "Your event. Your photos. One place."
 - Subtitle exactly: "Find every shot from the race, the padel night, or the festival, then download them after you sign in."
 - Do not add "free" to the subtitle.

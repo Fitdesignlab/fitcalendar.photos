@@ -18,7 +18,7 @@ export function EventCard({ event, index, feature = false }: { event: PhotoEvent
         <span className="shrink-0 font-mono-ui text-[11px] uppercase text-muted-foreground">{event.photos.length ? event.photos.length + ' photos' : 'Uploading'}</span>
       </div>
       <p className="mt-1 font-mono-ui text-[11px] uppercase text-muted-foreground">
-        <span className="text-accent">{CATEGORY_LABEL[event.category]}</span> / {event.city} / {formatDate(event.date)}
+        <span className="text-foreground">{CATEGORY_LABEL[event.category]}</span> / {event.city} / {formatDate(event.date)}
       </p>
     </Link>
   );

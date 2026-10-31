@@ -23,15 +23,15 @@ export function Lightbox({ photos, index, eventId, onChange }: Props) {
 
   return (
     <Dialog open={p !== null} onOpenChange={(o) => { if (!o) onChange(null); }}>
-      <DialogContent className="max-w-5xl border-none bg-[#151311] p-0 text-[#f4f1ec] sm:rounded-sm [&>button]:text-white" data-testid="dialog-lightbox">
+      <DialogContent className="max-w-5xl border-none bg-[#0a0a0a] p-0 text-[#ffffff] sm:rounded-sm [&>button]:text-white" data-testid="dialog-lightbox">
         {p && index !== null && (
           <div>
             <div className="relative">
               <img key={p.id} src={photoUrl(p.file)} alt={p.caption} className="rise max-h-[72dvh] w-full object-contain" />
               <button onClick={() => onChange((index - 1 + n) % n)} aria-label="Previous photo" data-testid="button-prev"
-                className="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 hover:bg-black/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ea4a1f]"><ChevronLeft className="h-5 w-5" /></button>
+                className="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 hover:bg-black/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"><ChevronLeft className="h-5 w-5" /></button>
               <button onClick={() => onChange((index + 1) % n)} aria-label="Next photo" data-testid="button-next"
-                className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 hover:bg-black/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ea4a1f]"><ChevronRight className="h-5 w-5" /></button>
+                className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 hover:bg-black/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"><ChevronRight className="h-5 w-5" /></button>
             </div>
             <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
               <div>
@@ -41,7 +41,7 @@ export function Lightbox({ photos, index, eventId, onChange }: Props) {
                 </DialogDescription>
               </div>
               <button onClick={() => requestDownload(p, eventId)} disabled={downloadingId === p.id} data-testid="button-lightbox-download"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#f4f1ec] px-5 py-2.5 text-sm font-medium text-[#151311] hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ea4a1f] disabled:opacity-60">
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-[#ffffff] px-5 py-2.5 text-sm font-medium text-[#0a0a0a] hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:opacity-60">
                 {user ? <Download className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
                 {user ? (downloadingId === p.id ? 'Saving' : 'Download photo') : 'Sign in to download'}
               </button>
