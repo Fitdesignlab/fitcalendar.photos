@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'wouter';
 import { FMark } from '@/components/f-mark';
 import { CurvedCarousel } from '@/components/curved-carousel';
-import { useDemoAuth } from '@/context/demo-auth';
+import { useAuth } from '@/context/auth';
 
 function useViewport() {
   const [v, setV] = useState(() => ({ w: window.innerWidth, h: window.innerHeight }));
@@ -39,7 +39,7 @@ function Doodles() {
 }
 
 export default function Home() {
-  const { openSignIn } = useDemoAuth();
+  const { openSignIn } = useAuth();
   const { w, h } = useViewport();
   const reduced = useReducedMotion();
   const go = () => openSignIn({ redirectTo: '/events' });

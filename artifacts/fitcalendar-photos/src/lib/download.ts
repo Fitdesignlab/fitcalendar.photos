@@ -1,9 +1,8 @@
-import { photoUrl, type EventPhoto } from './events';
+import type { EventPhoto } from './events';
+import { downloadEventPhoto } from '@workspace/api-client-react';
 
 export async function downloadPhoto(photo: EventPhoto, eventId: string): Promise<void> {
-  const res = await fetch(photoUrl(photo.file));
-  if (!res.ok) throw new Error('Could not fetch photo (' + res.status + ')');
-  const blob = await res.blob();
+  const blob = await downloadEventPhoto({ file: photo.file, eventId, photoId: photo.id }, { credentials: 'same-origin' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;

@@ -1,1 +1,2 @@
 - [Publishing verification](publishing-verification.md) — distinguish a working Photos preview from the older API-only published build.
+- [Code generation compatibility](codegen-compatibility.md) — Orval can silently select React Query 4 when scanning the API-spec package; keep the generator aligned with the app.

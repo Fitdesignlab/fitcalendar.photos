@@ -1,5 +1,9 @@
 import app from "./app";
 import { logger } from "./lib/logger";
+import { sessionCodec } from "./lib/auth-security";
+
+// Never run authentication with a missing or placeholder signing/encryption key.
+sessionCodec();
 
 const rawPort = process.env["PORT"];
 

@@ -1,9 +1,9 @@
 import { Download, Lock, Maximize2 } from 'lucide-react';
 import { photoUrl, type EventPhoto } from '@/lib/events';
-import { useDemoAuth } from '@/context/demo-auth';
+import { useAuth } from '@/context/auth';
 
 export function PhotoGrid({ photos, eventId, onOpen }: { photos: EventPhoto[]; eventId: string; onOpen: (i: number) => void }) {
-  const { user, requestDownload, downloadingId } = useDemoAuth();
+  const { user, requestDownload, downloadingId } = useAuth();
   return (
     <ul className="columns-1 gap-4 sm:columns-2 lg:columns-3 [&>li]:mb-4">
       {photos.map((p, i) => (

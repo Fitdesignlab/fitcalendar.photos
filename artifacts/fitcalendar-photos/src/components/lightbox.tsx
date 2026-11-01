@@ -2,12 +2,12 @@ import { useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Download, Lock } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import { photoUrl, type EventPhoto } from '@/lib/events';
-import { useDemoAuth } from '@/context/demo-auth';
+import { useAuth } from '@/context/auth';
 
 interface Props { photos: EventPhoto[]; index: number | null; eventId: string; onChange: (i: number | null) => void }
 
 export function Lightbox({ photos, index, eventId, onChange }: Props) {
-  const { user, requestDownload, downloadingId } = useDemoAuth();
+  const { user, requestDownload, downloadingId } = useAuth();
   const p = index !== null ? photos[index] : null;
   const n = photos.length;
 

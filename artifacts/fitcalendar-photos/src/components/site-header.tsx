@@ -1,10 +1,10 @@
 import { Link, useLocation } from 'wouter';
 import { LogOut } from 'lucide-react';
 import { FMark } from './f-mark';
-import { useDemoAuth } from '@/context/demo-auth';
+import { useAuth } from '@/context/auth';
 
 export function SiteHeader() {
-  const { user, openSignIn, signOut } = useDemoAuth();
+  const { user, openSignIn, signOut, signingOut, loading } = useAuth();
   const [loc] = useLocation();
   const onEvents = loc === '/events' || loc.startsWith('/event/');
   return (
@@ -20,16 +20,17 @@ export function SiteHeader() {
           </Link>
           {user ? (
             <>
-              <span className="hidden text-[13px] text-[#6E6E73] md:inline" data-testid="text-user">{user.name}</span>
-              <button onClick={signOut} aria-label="Sign out" data-testid="button-signout"
+              {user.picture && <img src={user.picture} alt="" referrerPolicy="no-referrer" className="h-8 w-8 rounded-full object-cover" data-testid="img-user" />}
+              <span className="hidden text-[13px] text-[#6E6E73] md:inline" title={user.email} data-testid="text-user">{user.name}</span>
+              <button onClick={signOut} disabled={signingOut} aria-label="Sign out" data-testid="button-signout"
                 className="inline-flex h-10 items-center gap-2 rounded-full border border-[#D9D9D9] px-4 transition-colors hover:border-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black">
-                <LogOut className="h-4 w-4" aria-hidden /> <span className="hidden sm:inline">Sign out</span>
+                <LogOut className="h-4 w-4" aria-hidden /> <span className="hidden sm:inline">{signingOut ? 'Signing out' : 'Sign out'}</span>
               </button>
             </>
           ) : (
-            <button onClick={() => openSignIn()} data-testid="button-signin"
+            <button onClick={() => openSignIn()} disabled={loading} data-testid="button-signin"
               className="h-10 rounded-full bg-black px-5 text-white transition-opacity hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2">
-              Log in
+              {loading ? 'Loading' : 'Log in'}
             </button>
           )}
         </nav>

@@ -6,7 +6,7 @@ import { SiteFooter } from '@/components/site-footer';
 import { PhotoGrid } from '@/components/photo-grid';
 import { Lightbox } from '@/components/lightbox';
 import { CATEGORY_LABEL, formatDate, getEvent, photoUrl } from '@/lib/events';
-import { useDemoAuth } from '@/context/demo-auth';
+import { useAuth } from '@/context/auth';
 import { usePageMeta } from '@/lib/use-page-meta';
 
 const pill = 'inline-flex h-12 w-fit items-center gap-2 rounded-full bg-black px-6 text-[15px] font-medium text-white transition-opacity hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2';
@@ -14,7 +14,7 @@ const pill = 'inline-flex h-12 w-fit items-center gap-2 rounded-full bg-black px
 export default function EventPage() {
   const { eventId = '' } = useParams<{ eventId: string }>();
   const event = getEvent(eventId);
-  const { user, openSignIn } = useDemoAuth();
+  const { user, openSignIn } = useAuth();
   const [tag, setTag] = useState('all');
   const [bib, setBib] = useState('');
   const [open, setOpen] = useState<number | null>(null);
@@ -73,7 +73,7 @@ export default function EventPage() {
 
         {!user && event.photos.length > 0 && (
           <div className="mt-12 flex flex-col gap-4 rounded-[28px] bg-[#F5F5F5] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
-            <p className="flex items-center gap-3 text-[15px] text-[#5E5E61]"><Lock className="h-4 w-4 shrink-0 text-[#101410]" aria-hidden /> Browse everything. Log in (demo) to download full-size files.</p>
+            <p className="flex items-center gap-3 text-[15px] text-[#5E5E61]"><Lock className="h-4 w-4 shrink-0 text-[#101410]" aria-hidden /> Browse everything. Sign in with Google to download photos.</p>
             <button onClick={() => openSignIn()} data-testid="button-banner-signin" className="h-11 shrink-0 rounded-full bg-black px-5 text-[14px] font-medium text-white hover:opacity-85">Log in</button>
           </div>
         )}

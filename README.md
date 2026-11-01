@@ -25,13 +25,24 @@ Build output: `artifacts/fitcalendar-photos/dist/public`.
 ## Routes
 
 - `/` — black-and-white Reelmark-style hero with a curved photo carousel.
+- `/events` — sample event cards with name, date, place and cover photo.
 - `/event/:eventId` — event gallery, including a missing-event state.
 
 The production artifact serves static build output at `/`, with an SPA rewrite to `/index.html` for direct event links.
 
 ## Sign-in and payments
 
-Google and Apple sign-in are **explicit demo stubs**, not real OAuth. They do not collect credentials, create real accounts, or secure private images. A session-only demo sign-in unlocks downloads of public sample images. Replace these stubs with managed authentication and server-authorized downloads before adding private event photography.
+Google sign-in uses Google's official Identity Services button. The API verifies the ID token's signature, audience, issuer, expiry, verified email and login nonce with `google-auth-library`. A seven-day encrypted HttpOnly cookie stores the verified user's Google subject ID, name, email and picture. The cookie is Secure in production, SameSite=Lax, host-only and scoped to `/api`. Browser storage is not accepted as authentication.
+
+Configuration is server-side: `GOOGLE_CLIENT_ID` (public Web Client ID), `GOOGLE_ALLOWED_ORIGINS` (comma-separated exact origins), and the existing `SESSION_SECRET` (secret, used to encrypt/authenticate cookies). No Google client secret is needed for this GIS ID-token flow. The frontend receives the public Client ID and a short-lived nonce from `/api/auth/config`, so the static frontend does not require a Client ID baked into its build.
+
+Google's configured JavaScript origins are `https://fitcalendar.photos` and `https://fit-fotos.replit.app`. Sign-in on other origins, including the development preview, is intentionally unavailable with clear links to the published sites. Do not add a demo fallback. Real Google account selection and consent must be confirmed on an authorized origin after republishing.
+
+Normal sign-in goes to `/events`. Sign-in requested by a download resumes that download without leaving its gallery. `/api/photos/download` requires a valid Google session and only serves allowlisted sample files. Apple is disabled with a clear message and cannot create a session or unlock downloads.
+
+The sample display images still live in public static folders and can be viewed without authentication. They are not private photos. Before adding private event photography, move originals to private storage with server-authorized access rather than treating these public preview URLs as secure.
+
+Run `pnpm --filter @workspace/api-server test` for authentication/session/download security tests. Successful profile issuance tests use a synthetic verifier only inside an isolated test server; the running app always uses Google's verifier. A full real-account OAuth test requires the user's Google consent on an authorized published origin.
 
 `PAYMENTS_ENABLED` is hardcoded to `false`. Ziina is not connected, no payment credentials are needed, and no charge or checkout is initiated.
 

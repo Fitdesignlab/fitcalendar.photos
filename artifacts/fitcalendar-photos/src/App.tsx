@@ -7,7 +7,7 @@ import NotFound from '@/pages/not-found';
 import Home from '@/pages/home';
 import EventPage from '@/pages/event';
 import EventsPage from '@/pages/events';
-import { DemoAuthProvider } from '@/context/demo-auth';
+import { AuthProvider } from '@/context/auth';
 import { SignInDialog } from '@/components/sign-in-dialog';
 import {
   Route,
@@ -43,10 +43,10 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-          <DemoAuthProvider>
+          <AuthProvider>
             <Router />
             <SignInDialog />
-          </DemoAuthProvider>
+          </AuthProvider>
         </WouterRouter>
         <Toaster />
       </TooltipProvider>

@@ -31,14 +31,16 @@ _Populate as you build — non-obvious choices a reader couldn't infer from the 
 ## Product
 
 - The Photos web application serves the unchanged landing hero at `/`, an events list at `/events`, and galleries at `/event/:eventId`. All routes must work on direct navigation and refresh.
-- Google and Apple sign-in are explicitly requested demo stubs, not production authentication. Only public sample imagery is used.
-- Downloads require demo sign-in. `PAYMENTS_ENABLED` stays `false`; Ziina remains inactive.
+- Google sign-in uses the user's existing Web Client through official GIS, not managed Clerk auth. Verify ID tokens on the API server and use encrypted HttpOnly sessions; never accept the old demo browser state.
+- The supplied Google origins are fitcalendar.photos and fit-fotos.replit.app. Preview sign-in stays unavailable unless the user explicitly adds an authorized Google origin. Never silently fall back to demo auth.
+- Apple is disabled with a clear message. Downloads require a server-verified Google session. `PAYMENTS_ENABLED` stays `false`; Ziina remains inactive.
+- Sample display images remain public. Server-gated downloads do not make public preview images private; use private storage before accepting private photography.
 
 ## User preferences
 
 - White one-screen Reelmark-style landing hero with a curved, draggable sports photo carousel. UI is strictly black, white and neutral grey; full-colour real sports photos are the only colour.
 - Fit Calendar F-mark only in the header, no wordmark or slogan. No em dashes in rendered UI.
-- Landing Log in, Sign up and Get your photos actions open demo provider selection, then go to `/events`. Gallery download sign-in must still resume its pending download without redirecting.
+- Landing Log in, Sign up and Get your photos actions open Google sign-in, then go to `/events`. Gallery download sign-in must still resume its pending download without redirecting.
 - H1 exactly: "Your event. Your photos. One place."
 - Subtitle exactly: "Find every shot from the race, the padel night, or the festival, then download them after you sign in."
 - Do not add "free" to the subtitle.
