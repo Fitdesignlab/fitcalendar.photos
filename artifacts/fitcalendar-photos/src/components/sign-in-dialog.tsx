@@ -27,9 +27,6 @@ export function SignInDialog() {
             <SiApple className="absolute left-3 h-[18px] w-[18px]" aria-hidden /> Continue with Apple
           </button>
         </div>
-        <p className="mt-5 rounded-2xl border border-[#E6E6E6] bg-[#F5F5F5] px-4 py-3 text-xs leading-relaxed text-[#6E6E73]" data-testid="text-auth-note">
-          Google verifies your account. We use your name, email and profile picture for your session. Photos and events shown here are illustrative samples.
-        </p>
       </DialogContent>
     </Dialog>
   );

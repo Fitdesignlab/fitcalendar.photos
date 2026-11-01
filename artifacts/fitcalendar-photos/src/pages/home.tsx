@@ -68,7 +68,7 @@ export default function Home() {
           <p className="lp-hand e-note mt-3 text-[26px]" style={{ transform: 'rotate(-4deg)' }}>Sign in to download</p>
         </div>
       </div>
-      <LandingFooter />
+      <LandingFooter showPoweredBy />
       </>
     );
   }
@@ -106,7 +106,7 @@ export default function Home() {
         </div>
       </div>
     </div>
-    <LandingFooter />
+    <LandingFooter showPoweredBy />
     </>
   );
 }

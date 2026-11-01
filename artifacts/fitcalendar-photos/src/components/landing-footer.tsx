@@ -5,10 +5,16 @@ const ext = { target: '_blank', rel: 'noopener noreferrer' } as const;
 const lk = 'rounded text-[15px] text-[#5E5E61] transition-colors hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black';
 const hd = 'mb-5 text-[12px] font-semibold uppercase tracking-[0.14em] text-black';
 
-export function LandingFooter() {
+export function LandingFooter({ showPoweredBy = false }: { showPoweredBy?: boolean }) {
   const toTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
   return (
     <footer className="border-t border-[#EDEDED] bg-[#FAFAFA] font-sans text-black" data-testid="footer-landing">
+      {showPoweredBy && (
+        <div className="flex flex-col items-center gap-[3px] px-6 pt-8" data-testid="footer-powered-by">
+          <span className="text-[11px] leading-4 text-[#6E6E73]">Powered by</span>
+          <LogoLockup className="text-[15px]" />
+        </div>
+      )}
       <div className="mx-auto max-w-[1280px] px-6 pb-10 pt-16 md:px-10 md:pt-24">
         <div className="grid gap-12 md:grid-cols-12 md:gap-8">
           <div className="md:col-span-5">

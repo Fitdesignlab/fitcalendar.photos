@@ -48,7 +48,8 @@ _Populate as you build — non-obvious choices a reader couldn't infer from the 
 - H1 exactly: "Your event. Your photos. One place."
 - Subtitle exactly: "Find every shot from the race, the padel night, or the festival, then download them after you sign in."
 - Do not add "free" to the subtitle.
-- The landing footer is the full FitCalendar footer with directory/about/contact/social links, copyright and legal links, below the unchanged hero and outside its scaled frame. It replaces the old Powered by-only footer.
+- The landing footer is the full FitCalendar footer with directory/about/contact/social links, copyright and legal links, below the unchanged hero and outside its scaled frame. Keep a centered Powered by block above its columns: small muted label on one line, black wordmark logo image directly below. No App Store/Play badges unless already present.
+- Keep the sign-in modal free of the removed grey account-verification/session-data/sample-photos disclaimer box. Preserve its other title, description and provider controls.
 - `/terms` reproduces the complete Terms of Use from https://fitcalendar.com/terms, dated 13 October 2026. Do not invent legal text or silently rewrite its substance. Privacy links use https://fitcalendar.com/privacy.
 - The source Terms mention Clerk and directory features because the user requested the existing text verbatim. This is not an instruction to migrate Photos authentication from Google GIS to Clerk; Photos-specific legal wording needs operator review.
 
