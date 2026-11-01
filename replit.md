@@ -31,6 +31,7 @@ _Populate as you build — non-obvious choices a reader couldn't infer from the 
 ## Product
 
 - The Photos web application serves the unchanged landing hero at `/`, an events list at `/events`, and galleries at `/event/:eventId`. All routes must work on direct navigation and refresh.
+- Available events must show only the real Fit Calendar event https://fitcalendar.app/event/369, with its local deep link `/event/369`. Do not add or restore demo/example events. Do not present illustrative sports photos as this event's gallery.
 - Google sign-in uses the user's existing Web Client through official GIS, not managed Clerk auth. Verify ID tokens on the API server and use encrypted HttpOnly sessions; never accept the old demo browser state.
 - The supplied Google origins are fitcalendar.photos and fit-fotos.replit.app. Preview sign-in stays unavailable unless the user explicitly adds an authorized Google origin. Never silently fall back to demo auth.
 - Apple remains a disabled stub because no Apple credentials are configured. Show a black button with white Apple logo and "Continue with Apple", matching the official Google button dimensions. Do not restore the removed inactive/coming-soon helper line. Downloads require a server-verified Google session. `PAYMENTS_ENABLED` stays `false`; Ziina remains inactive.

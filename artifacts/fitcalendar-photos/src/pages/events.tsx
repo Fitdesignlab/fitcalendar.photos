@@ -9,7 +9,7 @@ import { usePageMeta } from '@/lib/use-page-meta';
 type Filter = 'all' | Category;
 
 export default function EventsPage() {
-  usePageMeta('Events | Fit Calendar Photos', 'Browse example running, padel, cycling and triathlon events across the UAE and find your photos.');
+  usePageMeta('Events | Fit Calendar Photos', 'Find Sunrise Pilates on a Yacht and its event photo gallery.');
   const [filter, setFilter] = useState<Filter>('all');
   const [q, setQ] = useState('');
   const cats = useMemo(() => Array.from(new Set(EVENTS.map((e) => e.category))), []);
@@ -26,11 +26,11 @@ export default function EventsPage() {
       <main className="mx-auto w-full max-w-[1280px] flex-1 px-5 pb-24 pt-12 md:px-10 md:pt-20">
         <section className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <div className="rise max-w-2xl">
-            <p className="text-[14px] font-medium text-[#6E6E73]">{EVENTS.length} example events / {TOTAL_PHOTOS} sample photos</p>
+            <p className="text-[14px] font-medium text-[#6E6E73]" data-testid="text-events-count">{EVENTS.length} available event{EVENTS.length === 1 ? '' : 's'} / {TOTAL_PHOTOS} photos</p>
             <h1 className="mt-3 font-[Inter_Tight] text-[44px] font-bold leading-[1.02] tracking-[-0.035em] md:text-[72px]" data-testid="text-events-title">
-              Find your race.<br /><span className="text-[#9A9A9E]">Take it home.</span>
+              Find your event.<br /><span className="text-[#9A9A9E]">Take it home.</span>
             </h1>
-            <p className="mt-5 max-w-md text-[17px] leading-7 text-[#5E5E61]">Pick an event, open the gallery and grab the shots of you. Every event here is an illustrative example.</p>
+            <p className="mt-5 max-w-md text-[17px] leading-7 text-[#5E5E61]">Open your event to find its details and available photos.</p>
           </div>
           <div className="rise w-full md:w-80" style={{ animationDelay: '120ms' }}>
             <label htmlFor="event-search" className="sr-only">Search events</label>

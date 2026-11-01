@@ -9,7 +9,7 @@ export function EventCard({ event, index, feature = false }: { event: PhotoEvent
       className={'rise group flex flex-col rounded-[28px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-4 ' + (feature ? 'md:col-span-2' : '')}
       style={{ animationDelay: index * 70 + 'ms' }}>
       <div className="relative overflow-hidden rounded-[28px] bg-[#F2F2F2]">
-        <img src={photoUrl(event.cover)} alt={'Illustrative cover photo for ' + event.name} loading="lazy"
+        <img src={photoUrl(event.cover)} alt={event.name} loading="lazy"
           className={'w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04] ' + (feature ? 'aspect-[4/3] md:aspect-[16/8]' : 'aspect-[4/3]')} />
         <div className="absolute inset-x-0 top-0 flex items-start justify-between p-4">
           <span className="rounded-full bg-white px-3 py-1.5 text-[12px] font-medium text-[#101410]">{CATEGORY_LABEL[event.category]}</span>
@@ -18,7 +18,7 @@ export function EventCard({ event, index, feature = false }: { event: PhotoEvent
           </span>
         </div>
         <span className={'absolute bottom-4 left-4 rounded-full px-3 py-1.5 text-[12px] font-medium backdrop-blur ' + (count ? 'bg-black/55 text-white' : 'bg-white/90 text-[#101410]')} data-testid={'status-count-' + event.id}>
-          {count ? count + ' sample photos' : 'Uploading soon'}
+          {count ? count + ' photos' : 'No photos yet'}
         </span>
       </div>
       <div className="px-1 pt-4">

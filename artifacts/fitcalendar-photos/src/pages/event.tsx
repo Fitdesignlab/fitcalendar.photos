@@ -22,7 +22,7 @@ export default function EventPage() {
 
   usePageMeta(
     event ? event.name + ' photos | Fit Calendar Photos' : 'Event not found | Fit Calendar Photos',
-    event ? 'Sample gallery for ' + event.name + ', ' + event.city + ', ' + formatDate(event.date) + '. Illustrative example event.' : 'This event could not be found. Browse all example events.',
+    event ? 'Event photo gallery for ' + event.name + ', ' + event.city + ', ' + formatDate(event.date) + '.' : 'This event could not be found. Browse available events.',
   );
 
   const tags = useMemo(() => Array.from(new Set(event?.photos.flatMap((p) => p.tags) ?? [])), [event]);
@@ -57,7 +57,6 @@ export default function EventPage() {
           <div className="rise">
             <div className="flex flex-wrap items-center gap-2 text-[13px] font-medium">
               <span className="rounded-full bg-black px-3 py-1.5 text-white">{CATEGORY_LABEL[event.category]}</span>
-              <span className="rounded-full border border-[#D9D9D9] px-3 py-1.5 text-[#5E5E61]">Example event</span>
             </div>
             <h1 className="mt-5 font-[Inter_Tight] text-[42px] font-bold leading-[1.02] tracking-[-0.035em] md:text-[68px]" data-testid="text-event-name">{event.name}</h1>
             <p className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-[15px] text-[#6E6E73]">
@@ -65,9 +64,10 @@ export default function EventPage() {
               <span className="inline-flex items-center gap-1.5"><MapPin className="h-4 w-4" aria-hidden />{event.city}</span>
             </p>
             <p className="mt-5 max-w-lg text-[17px] leading-7 text-[#5E5E61]">{event.blurb}</p>
+            <a href={event.sourceUrl} target="_blank" rel="noopener noreferrer" data-testid="link-source-event" className="mt-4 inline-block text-[14px] font-medium underline underline-offset-4">View original event listing</a>
           </div>
           <div className="rise overflow-hidden rounded-[28px] bg-[#F2F2F2]" style={{ animationDelay: '100ms' }}>
-            <img src={photoUrl(event.cover)} alt={'Illustrative cover for ' + event.name} className="aspect-[4/3] w-full object-cover" />
+            <img src={photoUrl(event.cover)} alt={event.name} className="aspect-[4/3] w-full object-cover" />
           </div>
         </section>
 
@@ -81,9 +81,9 @@ export default function EventPage() {
         {event.photos.length === 0 ? (
           <div className="mt-12 rounded-[28px] border border-dashed border-[#D9D9D9] px-6 py-20 text-center" data-testid="status-empty-gallery">
             <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#F2F2F2]"><Camera className="h-6 w-6" aria-hidden /></span>
-            <p className="mt-5 font-[Inter_Tight] text-[32px] font-bold tracking-[-0.03em]">Photos on the way.</p>
-            <p className="mx-auto mt-2 max-w-sm text-[#6E6E73]">The photographers are still uploading this gallery. Check back soon.</p>
-            <Link href="/events" data-testid="link-empty-events" className={pill + ' mx-auto mt-7'}>Browse other events</Link>
+            <p className="mt-5 font-[Inter_Tight] text-[32px] font-bold tracking-[-0.03em]">No photos available yet.</p>
+            <p className="mx-auto mt-2 max-w-sm text-[#6E6E73]">A photo gallery has not been added for this event.</p>
+            <Link href="/events" data-testid="link-empty-events" className={pill + ' mx-auto mt-7'}>Back to events</Link>
           </div>
         ) : (
           <>
@@ -101,7 +101,7 @@ export default function EventPage() {
                   className="w-full bg-transparent text-[15px] outline-none placeholder:text-[#9A9A9E]" />
               </div>
             </div>
-            <p className="mb-5 mt-6 text-[14px] text-[#6E6E73]" data-testid="text-photo-count">{photos.length} {photos.length === 1 ? 'sample photo' : 'sample photos'}</p>
+            <p className="mb-5 mt-6 text-[14px] text-[#6E6E73]" data-testid="text-photo-count">{photos.length} {photos.length === 1 ? 'photo' : 'photos'}</p>
             {photos.length ? (
               <PhotoGrid key={tag + bib} photos={photos} eventId={event.id} onOpen={setOpen} />
             ) : (
