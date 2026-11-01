@@ -45,6 +45,7 @@ _Populate as you build — non-obvious choices a reader couldn't infer from the 
 - Homepage "Get your photos" CTA is a standalone solid black pill, without an outer dashed border or outline.
 - Image-card downloads match Glass circle 5:9 specs: 30px circle, white fill at 14%, 0.6px white border at 22%, 8px backdrop blur, white 14px tray-arrow glyph, bottom-right inset about 12px. Do not add category chips.
 - Landing Log in, Sign up and Get your photos actions open Google sign-in, then go to `/events`. Gallery download sign-in must still resume its pending download without redirecting.
+- Successful logout keeps the existing server/session and client-cache clearing, then returns to the public home hero at `/` and scrolls to the top. Do not show a signed-out toast or logout dialog. Keep error feedback if logout fails.
 - H1 exactly: "Your event. Your photos. One place."
 - Subtitle exactly: "Find every shot from the race, the padel night, or the festival, then download them after you sign in."
 - Do not add "free" to the subtitle.

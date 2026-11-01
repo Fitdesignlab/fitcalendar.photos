@@ -97,7 +97,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       disableGoogleAutoSelect();
       cache.setQueryData<AuthSession>(getGetAuthSessionQueryKey(), { user: null });
       setWaiting(null);
-      toast({ title: 'Signed out', description: 'Sign in with Google to download photos again.' });
+      setDialogOpen(false);
+      navigate('/', { replace: true });
+      window.scrollTo(0, 0);
     }).catch(() => {
       toast({ title: 'Could not sign out', description: 'Please try again. Your session has not been cleared.', variant: 'destructive' });
     });
