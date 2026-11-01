@@ -17,13 +17,14 @@ export function PhotoGrid({ photos, eventId, onOpen }: { photos: EventPhoto[]; e
               <p className="truncate text-sm font-medium">{p.caption}</p>
               <p className="text-[12px] text-white/75">{p.time}{p.bib ? ' / Bib ' + p.bib : ''} / {p.photographer}</p>
             </div>
-            <div className="pointer-events-auto flex shrink-0 gap-1.5">
+            <div className="pointer-events-auto flex shrink-0 items-end gap-1.5">
               <span className="hidden h-9 w-9 items-center justify-center rounded-full bg-white/15 sm:flex" aria-hidden><Maximize2 className="h-4 w-4" /></span>
               <button onClick={() => requestDownload(p, eventId)} disabled={downloadingId === p.id}
+                aria-busy={downloadingId === p.id}
                 aria-label={(user ? 'Download ' : 'Sign in to download ') + p.caption} data-testid={'button-download-' + p.id}
-                className="photo-download-glass flex h-9 items-center gap-1.5 rounded-full px-3 text-xs font-medium hover:scale-105 disabled:opacity-60">
+                className="photo-download-glass relative left-1 top-1 disabled:opacity-60">
                 <Download className="h-3.5 w-3.5" aria-hidden />
-                {downloadingId === p.id ? 'Saving' : 'Download'}
+                <span className="sr-only">{downloadingId === p.id ? 'Saving' : 'Download'}</span>
               </button>
             </div>
           </div>

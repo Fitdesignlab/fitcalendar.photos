@@ -40,9 +40,9 @@ _Populate as you build — non-obvious choices a reader couldn't infer from the 
 
 - White one-screen Reelmark-style landing hero with a curved, draggable sports photo carousel. UI is strictly black, white and neutral grey; full-colour real sports photos are the only colour.
 - The homepage carousel must span the browser edge to edge, independently of the scaled hero frame. Fill wide screens with more repeated photo cards, not gigantic cards. Preserve the curved trapezoid shape, auto-scroll and dragging.
-- Homepage and sign-in modal use the full FitCalendar lockup: existing F icon with the one-word black wordmark. Homepage footer has "Powered by" above the same complete lockup at small scale. Other page headers remain unchanged. No em dashes in rendered UI.
+- Homepage header must match the FITCALENDAR.PHOTOS wordmark from Figma file "00 · DSN · FitCalendar Photos", node Header/Logo. Other page headers remain unchanged. No em dashes in rendered UI.
 - Homepage "Get your photos" CTA is a standalone solid black pill, without an outer dashed border or outline.
-- Download controls on homepage carousel and gallery image cards sit on the right and use frosted translucent glass, a thin light border, subtle shadow and a simple arrow-into-tray glyph.
+- Image-card downloads match Figma Glass circle 5:9: 30px circle, white fill at 14%, 0.6px white border at 22%, backdrop blur, white 14px tray-arrow glyph, bottom-right inset about 12px. Do not add category chips.
 - Landing Log in, Sign up and Get your photos actions open Google sign-in, then go to `/events`. Gallery download sign-in must still resume its pending download without redirecting.
 - H1 exactly: "Your event. Your photos. One place."
 - Subtitle exactly: "Find every shot from the race, the padel night, or the festival, then download them after you sign in."

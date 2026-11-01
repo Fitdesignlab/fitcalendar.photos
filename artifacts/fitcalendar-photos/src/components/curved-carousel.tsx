@@ -1,4 +1,4 @@
-import { useEffect, useRef, type KeyboardEvent, type PointerEvent } from 'react';
+import { useEffect, useRef, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react';
 import { Download } from 'lucide-react';
 import { CAROUSEL_PITCH as PITCH, carouselCardCount, carouselGeometry } from '@/lib/carousel-geometry';
 
@@ -77,7 +77,7 @@ export function CurvedCarousel({ scale, band, onPick, reduced, className = '' }:
         el.style.height = `${H}px`;
         el.style.clipPath = roundedQuad([[0, lt], [g.w, rt], [g.w, H - rt], [0, H - lt]]);
         const ic = icons.current[i];
-        if (ic) ic.style.transform = `translateY(${H - rt - 12 - 34}px)`;
+        if (ic) ic.style.transform = `translateY(${H - rt - 42 / cfg.current.scale}px)`;
       }
       raf = requestAnimationFrame(frame);
     };
@@ -117,7 +117,7 @@ export function CurvedCarousel({ scale, band, onPick, reduced, className = '' }:
   return (
     <div
       className={'carousel ' + className}
-      style={{ width: '100vw', height: band.height * scale }}
+      style={{ width: '100vw', height: band.height * scale, '--photo-download-scale': scale } as CSSProperties}
       role="region" aria-roledescription="carousel" aria-label="Photos from UAE events. Drag, or use arrow keys."
       tabIndex={0} onKeyDown={key}
       onFocus={(e) => { st.current.focus = e.target.matches(':focus-visible'); }} onBlur={() => { st.current.focus = false; }}
@@ -133,7 +133,7 @@ export function CurvedCarousel({ scale, band, onPick, reduced, className = '' }:
             <button ref={(el) => { icons.current[i] = el; }} className="carousel-dl photo-download-glass" aria-label={`Download ${p.label} photo`}
               onPointerDown={(e) => { st.current.moved = 0; e.stopPropagation(); }}
               onClick={onPick} data-testid={`button-download-${i}`}>
-              <Download className="h-[15px] w-[15px]" strokeWidth={2.2} aria-hidden />
+              <Download strokeWidth={2} aria-hidden />
             </button>
           </div>
         ))}
