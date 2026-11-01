@@ -1,6 +1,6 @@
 - [Publishing verification](publishing-verification.md) — distinguish a working Photos preview from the older API-only published build.
 - [Code generation compatibility](codegen-compatibility.md) — Orval can silently select React Query 4 when scanning the API-spec package; keep the generator aligned with the app.
-- [Wordmark provenance](wordmark-provenance.md) — current logo image is an export of the supplied-style wordmark, not an official Figma asset.
+- [Wordmark provenance](wordmark-provenance.md) — active SVGs reuse actual main-site brand artwork; they are self-contained image lockups, not a Figma or pure-vector export.
 - [Responsive GIS layout](gis-responsive-layout.md) — native Google button widths can hold a modal grid's minimum width; check inner overflow, not just outer bounds.
 - [Production glass CSS](production-glass-css.md) — verify backdrop blur in built/published CSS; passing dev-server style checks did not guarantee Chrome blur.
 - [Non-secret env visibility](nonsecret-env-visibility.md) — shared non-secret settings land in tracked configuration; keep personal addresses out of public repo diffs.

@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { SiApple } from 'react-icons/si';
 import { useAuth } from '@/context/auth';
-import { LogoLockup } from './logo-lockup';
+import { PhotosWordmark } from './photos-wordmark';
 import { GoogleSignIn } from './google-sign-in';
 
 export function SignInDialog() {
@@ -9,7 +9,7 @@ export function SignInDialog() {
   return (
     <Dialog open={dialogOpen} onOpenChange={(o) => { if (!o) closeSignIn(); }}>
       <DialogContent className="max-h-[calc(100dvh_-_2rem)] w-[calc(100%_-_2rem)] max-w-[400px] grid-cols-1 overflow-y-auto rounded-[28px] border border-[#E6E6E6] bg-white p-8 text-[#000] shadow-none sm:rounded-[28px]" data-testid="dialog-signin">
-        <LogoLockup className="text-[26px]" />
+        <PhotosWordmark className="photos-wordmark-dialog" />
         <DialogHeader className="mt-4 space-y-2 text-left">
           <DialogTitle className="font-[Inter_Tight] text-[30px] font-bold leading-[1.05] tracking-[-0.03em] text-[#000]">
             {pending ? 'Sign in to download.' : 'Sign in to get your photos.'}

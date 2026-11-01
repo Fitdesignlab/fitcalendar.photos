@@ -12,14 +12,14 @@ export function LandingFooter({ showPoweredBy = false }: { showPoweredBy?: boole
       {showPoweredBy && (
         <div className="flex flex-col items-center gap-[3px] px-6 pt-8" data-testid="footer-powered-by">
           <span className="text-[11px] leading-4 text-[#6E6E73]">Powered by</span>
-          <LogoLockup className="text-[15px]" />
+          <LogoLockup variant="lockup" className="text-[18px]" />
         </div>
       )}
       <div className="mx-auto max-w-[1280px] px-6 pb-10 pt-16 md:px-10 md:pt-24">
         <div className="grid gap-12 md:grid-cols-12 md:gap-8">
           <div className="md:col-span-5">
             <Link href="/" onClick={toTop} aria-label="FitCalendar home" data-testid="link-footer-home" className="inline-block rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black">
-              <LogoLockup className="text-[26px]" />
+              <LogoLockup variant="mark" className="text-[60px]" />
             </Link>
             <p className="mt-6 max-w-[22rem] text-[15px] leading-[1.65] text-[#5E5E61]">Find sports events, experts, and local communities in one place.</p>
             <p className="mt-4 font-['Inter_Tight',_'Inter',_sans-serif] text-[20px] font-semibold tracking-[-0.02em]">Train. Compete. Connect. Travel.</p>

@@ -5,10 +5,13 @@
 .lp-carousel-bleed { position: absolute; left: 0; width: 100vw; }
 .lp-abs { position: absolute; }
 .lp-home img { filter: brightness(0); }
-.photos-wordmark { --wordmark-size: 28px; display: inline-flex; align-items: baseline; white-space: nowrap; color: #000; font-size: var(--wordmark-size); line-height: 1; }
-.photos-wordmark-image { display: block; height: .74em; width: auto; flex-shrink: 0; }
+.photos-wordmark { --wordmark-size: 28px; display: inline-flex; max-width: 100%; align-items: center; white-space: nowrap; color: #000; font-size: var(--wordmark-size); line-height: 1; }
+.photos-wordmark-image { display: block; height: .74em; width: auto; max-width: 100%; object-fit: contain; }
+.photos-wordmark-header { --wordmark-size: 22px; max-width: calc(100vw - 204px); }
+.photos-wordmark-dialog { --wordmark-size: 20px; }
+@media (max-width: 639px) { .photos-wordmark-header { --wordmark-size: 16px; } }
+@media (max-width: 379px) { .photos-wordmark-header { --wordmark-size: 14px; } }
 .photos-wordmark-footer { --wordmark-size: 16px; }
-.photos-wordmark-suffix { font-family: 'Michroma', 'Inter', sans-serif; font-size: calc(var(--wordmark-size) / 2); letter-spacing: -.035em; }
 .lp-pill { display: inline-flex; align-items: center; justify-content: center; border-radius: 999px; font: 500 15px/1 'Inter', sans-serif; transition: transform .2s cubic-bezier(.2,.7,.1,1), background-color .2s, opacity .2s; }
 .lp-pill:focus-visible, .carousel:focus-visible, .carousel-dl:focus-visible, .lp-home:focus-visible { outline: 2px solid #000; outline-offset: 3px; }
 .lp-pill:active, .lp-cta:active { transform: scale(.97); }

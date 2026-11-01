@@ -1,10 +1,12 @@
 ---
 name: Wordmark provenance
-description: Origin of the transparent wordmark image and what not to claim about it.
+description: Origin and limitations of the Photos header SVG and FitCalendar footer brand assets.
 ---
 
-The transparent wordmark image was exported at high resolution from the existing browser-rendered wordmark. FIT used Racing Sans One with an additional -10 degree skew; CALENDAR used upright Archivo Black. It is not an official Figma export.
+The active SVG logos reuse artwork from the main FitCalendar site's public `/wordmark.webp` and `/fitcalendar-mark.png` assets. Those white-on-transparent assets were normalized to black. The Photos header combines the wordmark with embedded Michroma lettering in one self-contained SVG; the footer uses the real stylized F mark and wordmark.
 
-**Why:** No original wordmark image was available, and the user explicitly instructed implementation from the known style specifications without waiting for a Figma connector. The image export preserves that appearance while meeting the subsequent image-only branding rule in the project instructions.
+These SVGs contain embedded raster brand artwork, not newly traced vector paths or an official Figma export. The older standalone PNG wordmark was a browser export using Racing Sans One and Archivo Black; it is retained for compatibility, but is no longer the active header/footer logo.
+
+**Why:** The user requested a single-line FITCALENDAR.PHOTOS SVG on every page and the actual main-site F mark in the footer. Reusing the site's artwork avoids another font-based approximation and preserves the image-only branding rule.
 
 **How to apply:** Reuse the image rather than reconstructing the brand with HTML text. Do not describe the asset as retrieved from Figma. If an original official asset becomes available, use it as the reference for any replacement.
