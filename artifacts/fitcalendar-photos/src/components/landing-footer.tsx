@@ -34,9 +34,15 @@ export function LandingFooter({ showPoweredBy = false }: { showPoweredBy?: boole
   return (
     <>
       {showPoweredBy && (
-        <div className="flex flex-col items-center gap-1 bg-white px-6 pb-6 pt-10" data-testid="footer-powered-by">
-          <span className="text-[11px] leading-4 text-[#6E6E73]">Powered by</span>
-          <FitCalendarMark alt="FitCalendar" testId="img-powered-by-mark" className="h-[18px] w-auto" />
+        <div className="flex justify-center bg-white px-6 pb-6 pt-10" data-testid="footer-powered-by">
+          <img
+            src={`${import.meta.env.BASE_URL}brand/powered-by-fitcalendar.svg`}
+            alt="Powered by FitCalendar"
+            width={134}
+            height={32}
+            className="h-8 w-[134px]"
+            data-testid="img-powered-by-lockup"
+          />
         </div>
       )}
       <footer className={'fc-footer border-t ' + (showPoweredBy ? '' : 'mt-12')} aria-label="Site footer" data-testid="footer-landing">
