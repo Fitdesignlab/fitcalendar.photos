@@ -11,13 +11,14 @@ import type { GalleryRepository } from "../lib/gallery-repository";
 import { createPhotoPreview, InvalidImageError } from "../lib/gallery-storage";
 import { SessionCodec, SESSION_COOKIE } from "../lib/auth-security";
 import { GetEventGalleryResponse, RequestGalleryUploadResponse, CompleteGalleryUploadResponse } from "@workspace/api-zod";
+import { isPhotosAdmin } from "../lib/admin-policy";
 
 // Isolated synthetic sessions cannot authenticate to the running application.
 process.env.SESSION_SECRET = randomBytes(32).toString("base64url");
 process.env.PHOTOS_ADMIN_EMAIL_SHA256 = createHash("sha256").update("owner@example.test").digest("hex");
 process.env.GOOGLE_ALLOWED_ORIGINS = "https://photos.example.test";
 const origin = "https://photos.example.test";
-const owner = { id: "owner-subject", provider: "google", name: "Owner", email: "owner@example.test", picture: null };
+const owner = { id: "owner-subject", provider: "google", name: "Owner", email: process.env.PHOTOS_ADMIN_TEST_EMAIL ?? "owner@example.test", picture: null };
 const visitor = { ...owner, id: "visitor-subject", email: "visitor@example.test" };
 const rows = new Map<string, EventPhotoRow>();
 const repo: GalleryRepository = {
@@ -52,7 +53,12 @@ const input = { name: "actual-event-photo.png", mime: "image/png", size: 1234 };
 before(async () => {
   const app = express();
   app.use(cookieParser(), express.json());
-  app.use("/api", createGalleryRouter(repo, storage));
+  // Synthetic owner policy only in this isolated test router. An optional
+  // runtime-supplied approved identity exercises the actual production policy.
+  const testPolicy = process.env.PHOTOS_ADMIN_TEST_EMAIL ? isPhotosAdmin :
+    (user: Parameters<typeof isPhotosAdmin>[0]) => Boolean(user?.provider === "google" && user.email.toLowerCase() === owner.email);
+  app.use("/api", createGalleryRouter(repo, storage, testPolicy));
+  app.use("/strict-api", createGalleryRouter(repo, storage));
   await new Promise<void>((resolve) => { server = app.listen(0, "127.0.0.1", () => resolve()); });
   const address = server.address();
   if (!address || typeof address === "string") throw new Error("Test server failed");
@@ -67,12 +73,22 @@ test("only event 369 exists and admin capability comes from the encrypted sessio
   assert.equal((await galleryJson(await request("", { headers: headers() }))).canUpload, true);
   assert.equal((await galleryJson(await request("", { headers: headers({ ...owner, email: owner.email.toUpperCase() }) }))).canUpload, true);
 });
-test("a missing admin allowlist fails closed", async () => {
+test("runtime allowlists and role flags cannot promote another Google account", async () => {
   const configured = process.env.PHOTOS_ADMIN_EMAIL_SHA256;
-  delete process.env.PHOTOS_ADMIN_EMAIL_SHA256;
+  process.env.PHOTOS_ADMIN_EMAIL_SHA256 = createHash("sha256").update(visitor.email).digest("hex");
   try {
-    assert.equal((await galleryJson(await request("", { headers: headers() }))).canUpload, false);
-    assert.equal((await request("/uploads", { method: "POST", headers: headers(), body: JSON.stringify(input) })).status, 403);
+    assert.equal(isPhotosAdmin({ ...visitor, provider: "google" }), false);
+    const strict = base.replace("/api/", "/strict-api/");
+    assert.equal((await galleryJson(await fetch(strict, { headers: headers(visitor) }))).canUpload, false);
+    for (const [path, method] of [["/uploads", "POST"], [`/${randomUUID()}/complete`, "POST"], [`/${randomUUID()}`, "DELETE"]]) {
+      const response = await fetch(strict + path, {
+        method, headers: { ...headers(visitor), "X-Admin": "true" },
+        body: JSON.stringify({ ...input, role: "admin", isAdmin: true, email: owner.email }),
+      });
+      assert.equal(response.status, 403);
+    }
+    const appleCookie = `${SESSION_COOKIE}=${new SessionCodec(process.env.SESSION_SECRET!).seal({ ...owner, provider: "apple" }, "google-session", 60)}`;
+    assert.equal((await fetch(strict + "/uploads", { method: "POST", headers: { ...headers(), Cookie: appleCookie }, body: JSON.stringify(input) })).status, 401);
   } finally { process.env.PHOTOS_ADMIN_EMAIL_SHA256 = configured; }
 });
 test("anonymous, forged, other-user and cross-origin uploads are rejected", async () => {

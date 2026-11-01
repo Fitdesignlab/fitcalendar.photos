@@ -1,4 +1,4 @@
-import { createHash, randomUUID } from "node:crypto";
+import { randomUUID } from "node:crypto";
 import { Router, type Request, type Response, type IRouter } from "express";
 import rateLimit from "express-rate-limit";
 import { RequestGalleryUploadBody } from "@workspace/api-zod";
@@ -7,12 +7,8 @@ import { galleryRepository, type GalleryRepository } from "../lib/gallery-reposi
 import { GalleryStorage, InvalidImageError } from "../lib/gallery-storage";
 import { ObjectNotFoundError } from "../lib/objectStorage";
 import { isAllowedOrigin, noStore, readUser, type GoogleUser } from "../lib/auth-security";
+import { isPhotosAdmin } from "../lib/admin-policy";
 
-const isAdmin = (user: GoogleUser | null) => {
-  const emailHash = process.env.PHOTOS_ADMIN_EMAIL_SHA256?.trim().toLowerCase();
-  return Boolean(emailHash && user?.provider === "google" &&
-    createHash("sha256").update(user.email.trim().toLowerCase()).digest("hex") === emailHash);
-};
 const photoJson = (row: EventPhotoRow) => ({
   id: row.id, originalName: row.originalName, caption: row.originalName,
   file: `api/events/369/photos/${row.id}/preview`, tags: [] as string[], time: "", photographer: "",
@@ -22,6 +18,7 @@ const validId = (id: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4
 export function createGalleryRouter(
   repo: GalleryRepository = galleryRepository,
   storage: Pick<GalleryStorage, "reserve" | "publish" | "removePath" | "serve"> = new GalleryStorage(),
+  isAdmin: (user: GoogleUser | null) => boolean = isPhotosAdmin,
 ): IRouter {
   const router: IRouter = Router();
   const writes = rateLimit({ windowMs: 60_000, limit: 120, standardHeaders: "draft-8", legacyHeaders: false });
