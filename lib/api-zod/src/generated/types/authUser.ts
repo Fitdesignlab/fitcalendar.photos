@@ -5,7 +5,7 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-import type { AuthUserProvider } from "./authUserProvider";
+import type { AuthUserProvider } from './authUserProvider';
 
 export interface AuthUser {
   id: string;

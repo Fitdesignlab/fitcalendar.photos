@@ -1,12 +1,14 @@
 import type { EventPhoto } from './events';
-import { downloadEventPhoto } from '@workspace/api-client-react';
+import { downloadEventPhoto, downloadGalleryPhoto } from '@workspace/api-client-react';
 
 export async function downloadPhoto(photo: EventPhoto, eventId: string): Promise<void> {
-  const blob = await downloadEventPhoto({ file: photo.file, eventId, photoId: photo.id }, { credentials: 'same-origin' });
+  const blob = eventId === '369'
+    ? await downloadGalleryPhoto(eventId, photo.id, { credentials: 'same-origin' })
+    : await downloadEventPhoto({ file: photo.file, eventId, photoId: photo.id }, { credentials: 'same-origin' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `fitcalendar-${eventId}-${photo.id}.jpg`;
+  a.download = photo.originalName ?? `fitcalendar-${eventId}-${photo.id}.jpg`;
   document.body.appendChild(a);
   a.click();
   a.remove();

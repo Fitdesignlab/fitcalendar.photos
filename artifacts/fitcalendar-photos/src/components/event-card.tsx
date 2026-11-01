@@ -2,8 +2,8 @@ import { Link } from 'wouter';
 import { ArrowUpRight, CalendarDays, MapPin } from 'lucide-react';
 import { CATEGORY_LABEL, formatDate, photoUrl, type PhotoEvent } from '@/lib/events';
 
-export function EventCard({ event, index, feature = false }: { event: PhotoEvent; index: number; feature?: boolean }) {
-  const count = event.photos.length;
+export function EventCard({ event, index, feature = false, photoCount }: { event: PhotoEvent; index: number; feature?: boolean; photoCount?: number }) {
+  const count = photoCount;
   return (
     <Link href={'/event/' + event.id} data-testid={'link-event-' + event.id}
       className={'rise group flex flex-col rounded-[28px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-4 ' + (feature ? 'md:col-span-2' : '')}
@@ -18,7 +18,7 @@ export function EventCard({ event, index, feature = false }: { event: PhotoEvent
           </span>
         </div>
         <span className={'absolute bottom-4 left-4 rounded-full px-3 py-1.5 text-[12px] font-medium backdrop-blur ' + (count ? 'bg-black/55 text-white' : 'bg-white/90 text-[#101410]')} data-testid={'status-count-' + event.id}>
-          {count ? count + ' photos' : 'No photos yet'}
+          {count === undefined ? 'View gallery' : count ? count + (count === 1 ? ' photo' : ' photos') : 'No photos yet'}
         </span>
       </div>
       <div className="px-1 pt-4">

@@ -3,3 +3,4 @@
 - [Wordmark provenance](wordmark-provenance.md) — current logo image is an export of the supplied-style wordmark, not an official Figma asset.
 - [Responsive GIS layout](gis-responsive-layout.md) — native Google button widths can hold a modal grid's minimum width; check inner overflow, not just outer bounds.
 - [Production glass CSS](production-glass-css.md) — verify backdrop blur in built/published CSS; passing dev-server style checks did not guarantee Chrome blur.
+- [Non-secret env visibility](nonsecret-env-visibility.md) — shared non-secret settings land in tracked configuration; keep personal addresses out of public repo diffs.

@@ -5,32 +5,131 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-import * as zod from "zod";
+import * as zod from 'zod';
+
+
+/**
+ * @summary List published event photographs and current upload permission
+ */
+export const GetEventGalleryParams = zod.object({
+  "eventId": zod.coerce.string()
+})
+
+export const GetEventGalleryResponse = zod.object({
+  "eventId": zod.string(),
+  "canUpload": zod.boolean(),
+  "photos": zod.array(zod.object({
+  "id": zod.string(),
+  "file": zod.string(),
+  "originalName": zod.string(),
+  "caption": zod.string(),
+  "tags": zod.array(zod.string()),
+  "time": zod.string(),
+  "photographer": zod.string()
+}))
+})
+
+
+/**
+ * @summary Admin only, reserve a photograph and request a private upload URL
+ */
+export const RequestGalleryUploadParams = zod.object({
+  "eventId": zod.coerce.string()
+})
+
+export const requestGalleryUploadBodyNameMax = 200;
+
+export const requestGalleryUploadBodySizeMax = 20971520;
+
+
+
+export const RequestGalleryUploadBody = zod.object({
+  "name": zod.string().min(1).max(requestGalleryUploadBodyNameMax),
+  "mime": zod.enum(['image/jpeg', 'image/png', 'image/webp']),
+  "size": zod.number().int().min(1).max(requestGalleryUploadBodySizeMax)
+})
+
+export const RequestGalleryUploadResponse = zod.object({
+  "id": zod.string().uuid(),
+  "uploadUrl": zod.string()
+})
+
+
+/**
+ * @summary Admin only, validate the actual image and publish its gallery preview
+ */
+export const CompleteGalleryUploadParams = zod.object({
+  "eventId": zod.coerce.string(),
+  "photoId": zod.coerce.string().uuid()
+})
+
+export const CompleteGalleryUploadResponse = zod.object({
+  "id": zod.string(),
+  "file": zod.string(),
+  "originalName": zod.string(),
+  "caption": zod.string(),
+  "tags": zod.array(zod.string()),
+  "time": zod.string(),
+  "photographer": zod.string()
+})
+
+
+/**
+ * @summary Admin only, remove a photograph from the gallery
+ */
+export const DeleteGalleryPhotoParams = zod.object({
+  "eventId": zod.coerce.string(),
+  "photoId": zod.coerce.string().uuid()
+})
+
+export const DeleteGalleryPhotoResponse = zod.void()
+
+
+/**
+ * @summary Serve a reduced-size gallery preview
+ */
+export const GetGalleryPreviewParams = zod.object({
+  "eventId": zod.coerce.string(),
+  "photoId": zod.coerce.string().uuid()
+})
+
+export const GetGalleryPreviewResponse = zod.unknown()
+
+
+/**
+ * @summary Download a real original photograph after Google sign-in
+ */
+export const DownloadGalleryPhotoParams = zod.object({
+  "eventId": zod.coerce.string(),
+  "photoId": zod.coerce.string().uuid()
+})
+
+export const DownloadGalleryPhotoResponse = zod.unknown()
+
 
 /**
  * @summary Get Google configuration and a short-lived login nonce
  */
 export const GetGoogleAuthConfigResponse = zod.object({
-  clientId: zod.string(),
-  nonce: zod.string(),
-  allowedOrigins: zod.array(zod.string()),
-});
+  "clientId": zod.string(),
+  "nonce": zod.string(),
+  "allowedOrigins": zod.array(zod.string())
+})
+
 
 /**
  * @summary Read the verified Google session
  */
 export const GetAuthSessionResponse = zod.object({
-  user: zod.union([
-    zod.object({
-      id: zod.string(),
-      provider: zod.enum(["google"]),
-      name: zod.string(),
-      email: zod.string().email(),
-      picture: zod.string().nullable(),
-    }),
-    zod.null(),
-  ]),
-});
+  "user": zod.union([zod.object({
+  "id": zod.string(),
+  "provider": zod.enum(['google']),
+  "name": zod.string(),
+  "email": zod.string().email(),
+  "picture": zod.string().nullable()
+}),zod.null()])
+})
+
 
 /**
  * @summary Verify a Google ID token and create an HttpOnly session
@@ -40,54 +139,50 @@ export const googleSignInBodyCredentialMax = 16384;
 export const googleSignInBodyNonceMin = 32;
 export const googleSignInBodyNonceMax = 128;
 
+
+
 export const GoogleSignInBody = zod.object({
-  credential: zod.string().min(1).max(googleSignInBodyCredentialMax),
-  nonce: zod
-    .string()
-    .min(googleSignInBodyNonceMin)
-    .max(googleSignInBodyNonceMax),
-});
+  "credential": zod.string().min(1).max(googleSignInBodyCredentialMax),
+  "nonce": zod.string().min(googleSignInBodyNonceMin).max(googleSignInBodyNonceMax)
+})
 
 export const GoogleSignInResponse = zod.object({
-  user: zod.union([
-    zod.object({
-      id: zod.string(),
-      provider: zod.enum(["google"]),
-      name: zod.string(),
-      email: zod.string().email(),
-      picture: zod.string().nullable(),
-    }),
-    zod.null(),
-  ]),
-});
+  "user": zod.union([zod.object({
+  "id": zod.string(),
+  "provider": zod.enum(['google']),
+  "name": zod.string(),
+  "email": zod.string().email(),
+  "picture": zod.string().nullable()
+}),zod.null()])
+})
+
 
 /**
  * @summary Clear the current browser session
  */
-export const LogoutAuthResponse = zod.void();
+export const LogoutAuthResponse = zod.void()
+
 
 /**
  * @summary Download an allowlisted sample photo after Google sign-in
  */
-export const downloadEventPhotoQueryEventIdRegExp = new RegExp(
-  "^[a-z0-9-]{1,100}$",
-);
-export const downloadEventPhotoQueryPhotoIdRegExp = new RegExp(
-  "^[a-z0-9-]{1,100}$",
-);
+export const downloadEventPhotoQueryEventIdRegExp = new RegExp('^[a-z0-9-]{1,100}$');
+export const downloadEventPhotoQueryPhotoIdRegExp = new RegExp('^[a-z0-9-]{1,100}$');
+
 
 export const DownloadEventPhotoQueryParams = zod.object({
-  file: zod.coerce.string(),
-  eventId: zod.coerce.string().regex(downloadEventPhotoQueryEventIdRegExp),
-  photoId: zod.coerce.string().regex(downloadEventPhotoQueryPhotoIdRegExp),
-});
+  "file": zod.coerce.string(),
+  "eventId": zod.coerce.string().regex(downloadEventPhotoQueryEventIdRegExp),
+  "photoId": zod.coerce.string().regex(downloadEventPhotoQueryPhotoIdRegExp)
+})
 
-export const DownloadEventPhotoResponse = zod.unknown();
+export const DownloadEventPhotoResponse = zod.unknown()
+
 
 /**
  * Returns server health status
  * @summary Health check
  */
 export const HealthCheckResponse = zod.object({
-  status: zod.string(),
-});
+  "status": zod.string()
+})

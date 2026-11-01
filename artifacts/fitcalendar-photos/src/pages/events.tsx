@@ -3,7 +3,8 @@ import { Search } from 'lucide-react';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { EventCard } from '@/components/event-card';
-import { CATEGORY_LABEL, EVENTS, TOTAL_PHOTOS, type Category } from '@/lib/events';
+import { CATEGORY_LABEL, EVENTS, type Category } from '@/lib/events';
+import { useEventGallery } from '@/lib/use-event-gallery';
 import { usePageMeta } from '@/lib/use-page-meta';
 
 type Filter = 'all' | Category;
@@ -12,11 +13,13 @@ export default function EventsPage() {
   usePageMeta('Events | Fit Calendar Photos', 'Find Sunrise Pilates on a Yacht and its event photo gallery.');
   const [filter, setFilter] = useState<Filter>('all');
   const [q, setQ] = useState('');
+  const gallery = useEventGallery('369');
+  const photoCount = gallery.data?.photos.length;
   const cats = useMemo(() => Array.from(new Set(EVENTS.map((e) => e.category))), []);
   const list = useMemo(() => {
     const s = q.trim().toLowerCase();
     return [...EVENTS]
-      .sort((a, b) => Number(b.photos.length > 0) - Number(a.photos.length > 0) || b.date.localeCompare(a.date))
+      .sort((a, b) => b.date.localeCompare(a.date))
       .filter((e) => (filter === 'all' || e.category === filter) && (!s || (e.name + ' ' + e.city).toLowerCase().includes(s)));
   }, [filter, q]);
 
@@ -26,7 +29,7 @@ export default function EventsPage() {
       <main className="mx-auto w-full max-w-[1280px] flex-1 px-5 pb-24 pt-12 md:px-10 md:pt-20">
         <section className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <div className="rise max-w-2xl">
-            <p className="text-[14px] font-medium text-[#6E6E73]" data-testid="text-events-count">{EVENTS.length} available event{EVENTS.length === 1 ? '' : 's'} / {TOTAL_PHOTOS} photos</p>
+            <p className="text-[14px] font-medium text-[#6E6E73]" data-testid="text-events-count">{EVENTS.length} available event{EVENTS.length === 1 ? '' : 's'}{photoCount !== undefined ? ` / ${photoCount} ${photoCount === 1 ? 'photo' : 'photos'}` : ''}</p>
             <h1 className="mt-3 font-[Inter_Tight] text-[44px] font-bold leading-[1.02] tracking-[-0.035em] md:text-[72px]" data-testid="text-events-title">
               Find your event.<br /><span className="text-[#9A9A9E]">Take it home.</span>
             </h1>
@@ -53,7 +56,7 @@ export default function EventsPage() {
 
         {list.length ? (
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-2 lg:grid-cols-3" data-testid="list-events">
-            {list.map((e, i) => <EventCard key={e.id} event={e} index={i} feature={i === 0 && filter === 'all' && !q.trim()} />)}
+            {list.map((e, i) => <EventCard key={e.id} event={e} index={i} photoCount={photoCount} feature={i === 0 && filter === 'all' && !q.trim()} />)}
           </div>
         ) : (
           <div className="mt-16 rounded-[28px] bg-[#F5F5F5] px-6 py-20 text-center" data-testid="status-no-events">

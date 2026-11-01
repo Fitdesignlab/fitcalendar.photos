@@ -5,7 +5,10 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -18,35 +21,39 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
-} from "@tanstack/react-query";
+  UseQueryResult
+} from '@tanstack/react-query';
 
 import type {
   AuthSession,
   DownloadEventPhotoParams,
+  EventGallery,
+  GalleryPhoto,
+  GalleryUploadInput,
+  GalleryUploadTicket,
   GoogleAuthConfig,
   GoogleCredential,
-  HealthStatus,
-} from "./api.schemas";
+  HealthStatus
+} from './api.schemas';
 
-import { customFetch } from "../custom-fetch";
-import type { ErrorType, BodyType } from "../custom-fetch";
+import { customFetch } from '../custom-fetch';
+import type { ErrorType , BodyType } from '../custom-fetch';
 
 type AwaitedInput<T> = PromiseLike<T> | T;
 
-type Awaited<O> = O extends AwaitedInput<infer T> ? T : never;
+      type Awaited<O> = O extends AwaitedInput<infer T> ? T : never;
+
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-const withQueryKey = <T extends object, K>(
-  query: T,
-  queryKey: K,
-): T & { queryKey: K } => {
+
+
+const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
   const result = { queryKey } as T & { queryKey: K };
   for (const key of Object.keys(query)) {
     // The explicit queryKey always wins, matching the previous
     // `{ ...query, queryKey }` spread where it was set last.
-    if (key === "queryKey") continue;
+    if (key === 'queryKey') continue;
     Object.defineProperty(result, key, {
       enumerable: true,
       configurable: true,
@@ -56,804 +63,1130 @@ const withQueryKey = <T extends object, K>(
   return result;
 };
 
-export const getGetGoogleAuthConfigUrl = () => {
-  return `/api/auth/config`;
-};
+export const getGetEventGalleryUrl = (eventId: string,) => {
+
+
+
+
+  return `/api/events/${eventId}/photos`
+}
 
 /**
- * @summary Get Google configuration and a short-lived login nonce
+ * @summary List published event photographs and current upload permission
  */
-export const getGoogleAuthConfig = async (
-  options?: Parameters<typeof customFetch>[1],
-): Promise<GoogleAuthConfig> => {
-  return customFetch<GoogleAuthConfig>(getGetGoogleAuthConfigUrl(), {
+export const getEventGallery = async (eventId: string, options?: Parameters<typeof customFetch>[1]): Promise<EventGallery> => {
+
+  return customFetch<EventGallery>(getGetEventGalleryUrl(eventId),
+  {
     ...options,
-    method: "GET",
-  });
-};
+    method: 'GET'
 
-export const getGetGoogleAuthConfigQueryKey = () => {
-  return [`/api/auth/config`] as const;
-};
 
-export const getGetGoogleAuthConfigQueryOptions = <
-  TData = Awaited<ReturnType<typeof getGoogleAuthConfig>>,
-  TError = ErrorType<unknown>,
->(options?: {
-  query?: Partial<
-    UseQueryOptions<
-      Awaited<ReturnType<typeof getGoogleAuthConfig>>,
-      TError,
-      TData
-    >
-  >;
-  request?: SecondParameter<typeof customFetch>;
-}) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
+  }
+);}
 
-  const queryKey = queryOptions?.queryKey ?? getGetGoogleAuthConfigQueryKey();
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getGoogleAuthConfig>>
-  > = ({ signal }) => getGoogleAuthConfig({ signal, ...requestOptions });
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getGoogleAuthConfig>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
 
-export type GetGoogleAuthConfigQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getGoogleAuthConfig>>
->;
-export type GetGoogleAuthConfigQueryError = ErrorType<unknown>;
 
-export function useGetGoogleAuthConfig<
-  TData = Awaited<ReturnType<typeof getGoogleAuthConfig>>,
-  TError = ErrorType<unknown>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getGoogleAuthConfig>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+export const getGetEventGalleryQueryKey = (eventId: string,) => {
+    return [
+    `/api/events/${eventId}/photos`
+    ] as const;
+    }
+
+
+export const getGetEventGalleryQueryOptions = <TData = Awaited<ReturnType<typeof getEventGallery>>, TError = ErrorType<void>>(eventId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEventGallery>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetEventGalleryQueryKey(eventId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getEventGallery>>> = ({ signal }) => getEventGallery(eventId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: eventId !== null && eventId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getEventGallery>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetEventGalleryQueryResult = NonNullable<Awaited<ReturnType<typeof getEventGallery>>>
+export type GetEventGalleryQueryError = ErrorType<void>
+
+
+export function useGetEventGallery<TData = Awaited<ReturnType<typeof getEventGallery>>, TError = ErrorType<void>>(
+ eventId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEventGallery>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getGoogleAuthConfig>>,
+          Awaited<ReturnType<typeof getEventGallery>>,
           TError,
-          Awaited<ReturnType<typeof getGoogleAuthConfig>>
-        >,
-        "initialData"
-      >;
-    request?: SecondParameter<typeof customFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetGoogleAuthConfig<
-  TData = Awaited<ReturnType<typeof getGoogleAuthConfig>>,
-  TError = ErrorType<unknown>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getGoogleAuthConfig>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+          Awaited<ReturnType<typeof getEventGallery>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetEventGallery<TData = Awaited<ReturnType<typeof getEventGallery>>, TError = ErrorType<void>>(
+ eventId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEventGallery>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getGoogleAuthConfig>>,
+          Awaited<ReturnType<typeof getEventGallery>>,
           TError,
-          Awaited<ReturnType<typeof getGoogleAuthConfig>>
-        >,
-        "initialData"
-      >;
-    request?: SecondParameter<typeof customFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetGoogleAuthConfig<
-  TData = Awaited<ReturnType<typeof getGoogleAuthConfig>>,
-  TError = ErrorType<unknown>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getGoogleAuthConfig>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof customFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+          Awaited<ReturnType<typeof getEventGallery>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetEventGallery<TData = Awaited<ReturnType<typeof getEventGallery>>, TError = ErrorType<void>>(
+ eventId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEventGallery>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Get Google configuration and a short-lived login nonce
+ * @summary List published event photographs and current upload permission
  */
 
-export function useGetGoogleAuthConfig<
-  TData = Awaited<ReturnType<typeof getGoogleAuthConfig>>,
-  TError = ErrorType<unknown>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getGoogleAuthConfig>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof customFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getGetGoogleAuthConfigQueryOptions(options);
+export function useGetEventGallery<TData = Awaited<ReturnType<typeof getEventGallery>>, TError = ErrorType<void>>(
+ eventId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getEventGallery>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getGetEventGalleryQueryOptions(eventId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return withQueryKey(query, queryOptions.queryKey);
 }
 
-export const getGetAuthSessionUrl = () => {
-  return `/api/auth/session`;
-};
 
-/**
- * @summary Read the verified Google session
- */
-export const getAuthSession = async (
-  options?: Parameters<typeof customFetch>[1],
-): Promise<AuthSession> => {
-  return customFetch<AuthSession>(getGetAuthSessionUrl(), {
-    ...options,
-    method: "GET",
-  });
-};
 
-export const getGetAuthSessionQueryKey = () => {
-  return [`/api/auth/session`] as const;
-};
 
-export const getGetAuthSessionQueryOptions = <
-  TData = Awaited<ReturnType<typeof getAuthSession>>,
-  TError = ErrorType<unknown>,
->(options?: {
-  query?: Partial<
-    UseQueryOptions<Awaited<ReturnType<typeof getAuthSession>>, TError, TData>
-  >;
-  request?: SecondParameter<typeof customFetch>;
-}) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetAuthSessionQueryKey();
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getAuthSession>>> = ({
-    signal,
-  }) => getAuthSession({ signal, ...requestOptions });
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getAuthSession>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+export const getRequestGalleryUploadUrl = (eventId: string,) => {
 
-export type GetAuthSessionQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getAuthSession>>
->;
-export type GetAuthSessionQueryError = ErrorType<unknown>;
 
-export function useGetAuthSession<
-  TData = Awaited<ReturnType<typeof getAuthSession>>,
-  TError = ErrorType<unknown>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getAuthSession>>, TError, TData>
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getAuthSession>>,
-          TError,
-          Awaited<ReturnType<typeof getAuthSession>>
-        >,
-        "initialData"
-      >;
-    request?: SecondParameter<typeof customFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetAuthSession<
-  TData = Awaited<ReturnType<typeof getAuthSession>>,
-  TError = ErrorType<unknown>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getAuthSession>>, TError, TData>
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getAuthSession>>,
-          TError,
-          Awaited<ReturnType<typeof getAuthSession>>
-        >,
-        "initialData"
-      >;
-    request?: SecondParameter<typeof customFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetAuthSession<
-  TData = Awaited<ReturnType<typeof getAuthSession>>,
-  TError = ErrorType<unknown>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getAuthSession>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof customFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary Read the verified Google session
- */
 
-export function useGetAuthSession<
-  TData = Awaited<ReturnType<typeof getAuthSession>>,
-  TError = ErrorType<unknown>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getAuthSession>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof customFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getGetAuthSessionQueryOptions(options);
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return withQueryKey(query, queryOptions.queryKey);
+  return `/api/events/${eventId}/photos/uploads`
 }
 
-export const getGoogleSignInUrl = () => {
-  return `/api/auth/google`;
-};
-
 /**
- * @summary Verify a Google ID token and create an HttpOnly session
+ * @summary Admin only, reserve a photograph and request a private upload URL
  */
-export const googleSignIn = async (
-  googleCredential: GoogleCredential,
-  options?: Parameters<typeof customFetch>[1],
-): Promise<AuthSession> => {
-  const getHeaders = (
-    h?: NonNullable<RequestInit["headers"]>,
-  ): Record<string, string | readonly string[]> => {
+export const requestGalleryUpload = async (eventId: string,
+    galleryUploadInput: GalleryUploadInput, options?: Parameters<typeof customFetch>[1]): Promise<GalleryUploadTicket> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
     if (h instanceof Headers) return Object.fromEntries(h.entries());
     if (Symbol.iterator in h) {
       return Object.fromEntries(
-        Array.from(
-          h as Iterable<Iterable<string>>,
-          (entry) => Array.from(entry) as [string, string],
-        ),
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
       );
     }
     const headers: Record<string, string | readonly string[]> = {};
-    for (const [name, value] of Object.entries<
-      string | readonly string[] | undefined
-    >(h)) {
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
       if (value !== undefined) headers[name] = value;
     }
     return headers;
   };
-  return customFetch<AuthSession>(getGoogleSignInUrl(), {
+return customFetch<GalleryUploadTicket>(getRequestGalleryUploadUrl(eventId),
+  {
     ...options,
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...getHeaders(options?.headers),
-    },
-    body: JSON.stringify(googleCredential),
-  });
-};
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(galleryUploadInput)
+  }
+);}
 
-export const getGoogleSignInMutationKey = () => ["googleSignIn"] as const;
 
-export const getGoogleSignInMutationOptions = <
-  TError = ErrorType<void>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof googleSignIn>>,
-    TError,
-    GoogleSignInMutationVariables,
-    TContext
-  >;
-  request?: SecondParameter<typeof customFetch>;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof googleSignIn>>,
-  TError,
-  GoogleSignInMutationVariables,
-  TContext
-> => {
-  const mutationKey = getGoogleSignInMutationKey();
-  const { mutation: mutationOptions, request: requestOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, request: undefined };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof googleSignIn>>,
-    GoogleSignInMutationVariables
-  > = (props) => {
-    const { data } = props ?? {};
 
-    return googleSignIn(data, requestOptions);
-  };
 
-  return { mutationFn, ...mutationOptions };
-};
+export const getRequestGalleryUploadMutationKey = () => ['requestGalleryUpload'] as const;
 
-export type GoogleSignInMutationResult = NonNullable<
-  Awaited<ReturnType<typeof googleSignIn>>
->;
-export type GoogleSignInMutationBody = BodyType<GoogleCredential>;
-export type GoogleSignInMutationError = ErrorType<void>;
-export type GoogleSignInMutationVariables = {
-  data: BodyType<GoogleCredential>;
-};
+export const getRequestGalleryUploadMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof requestGalleryUpload>>, TError,RequestGalleryUploadMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof requestGalleryUpload>>, TError,RequestGalleryUploadMutationVariables, TContext> => {
+
+const mutationKey = getRequestGalleryUploadMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof requestGalleryUpload>>, RequestGalleryUploadMutationVariables> = (props) => {
+          const {eventId,data} = props ?? {};
+
+          return  requestGalleryUpload(eventId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RequestGalleryUploadMutationResult = NonNullable<Awaited<ReturnType<typeof requestGalleryUpload>>>
+    export type RequestGalleryUploadMutationBody = BodyType<GalleryUploadInput>
+    export type RequestGalleryUploadMutationError = ErrorType<void>
+    export type RequestGalleryUploadMutationVariables = {eventId: string;data: BodyType<GalleryUploadInput>}
+
+    /**
+ * @summary Admin only, reserve a photograph and request a private upload URL
+ */
+export const useRequestGalleryUpload = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof requestGalleryUpload>>, TError,RequestGalleryUploadMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof requestGalleryUpload>>,
+        TError,
+        RequestGalleryUploadMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRequestGalleryUploadMutationOptions(options), queryClient);
+    }
+
+export const getCompleteGalleryUploadUrl = (eventId: string,
+    photoId: string,) => {
+
+
+
+
+  return `/api/events/${eventId}/photos/${photoId}/complete`
+}
+
+/**
+ * @summary Admin only, validate the actual image and publish its gallery preview
+ */
+export const completeGalleryUpload = async (eventId: string,
+    photoId: string, options?: Parameters<typeof customFetch>[1]): Promise<GalleryPhoto> => {
+
+  return customFetch<GalleryPhoto>(getCompleteGalleryUploadUrl(eventId,photoId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getCompleteGalleryUploadMutationKey = () => ['completeGalleryUpload'] as const;
+
+export const getCompleteGalleryUploadMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof completeGalleryUpload>>, TError,CompleteGalleryUploadMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof completeGalleryUpload>>, TError,CompleteGalleryUploadMutationVariables, TContext> => {
+
+const mutationKey = getCompleteGalleryUploadMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof completeGalleryUpload>>, CompleteGalleryUploadMutationVariables> = (props) => {
+          const {eventId,photoId} = props ?? {};
+
+          return  completeGalleryUpload(eventId,photoId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CompleteGalleryUploadMutationResult = NonNullable<Awaited<ReturnType<typeof completeGalleryUpload>>>
+
+    export type CompleteGalleryUploadMutationError = ErrorType<void>
+    export type CompleteGalleryUploadMutationVariables = {eventId: string;photoId: string}
+
+    /**
+ * @summary Admin only, validate the actual image and publish its gallery preview
+ */
+export const useCompleteGalleryUpload = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof completeGalleryUpload>>, TError,CompleteGalleryUploadMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof completeGalleryUpload>>,
+        TError,
+        CompleteGalleryUploadMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCompleteGalleryUploadMutationOptions(options), queryClient);
+    }
+
+export const getDeleteGalleryPhotoUrl = (eventId: string,
+    photoId: string,) => {
+
+
+
+
+  return `/api/events/${eventId}/photos/${photoId}`
+}
+
+/**
+ * @summary Admin only, remove a photograph from the gallery
+ */
+export const deleteGalleryPhoto = async (eventId: string,
+    photoId: string, options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+  return customFetch<void>(getDeleteGalleryPhotoUrl(eventId,photoId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteGalleryPhotoMutationKey = () => ['deleteGalleryPhoto'] as const;
+
+export const getDeleteGalleryPhotoMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteGalleryPhoto>>, TError,DeleteGalleryPhotoMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteGalleryPhoto>>, TError,DeleteGalleryPhotoMutationVariables, TContext> => {
+
+const mutationKey = getDeleteGalleryPhotoMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteGalleryPhoto>>, DeleteGalleryPhotoMutationVariables> = (props) => {
+          const {eventId,photoId} = props ?? {};
+
+          return  deleteGalleryPhoto(eventId,photoId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteGalleryPhotoMutationResult = NonNullable<Awaited<ReturnType<typeof deleteGalleryPhoto>>>
+
+    export type DeleteGalleryPhotoMutationError = ErrorType<void>
+    export type DeleteGalleryPhotoMutationVariables = {eventId: string;photoId: string}
+
+    /**
+ * @summary Admin only, remove a photograph from the gallery
+ */
+export const useDeleteGalleryPhoto = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteGalleryPhoto>>, TError,DeleteGalleryPhotoMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteGalleryPhoto>>,
+        TError,
+        DeleteGalleryPhotoMutationVariables,
+        TContext
+      > => {
+      return useMutation(getDeleteGalleryPhotoMutationOptions(options), queryClient);
+    }
+
+export const getGetGalleryPreviewUrl = (eventId: string,
+    photoId: string,) => {
+
+
+
+
+  return `/api/events/${eventId}/photos/${photoId}/preview`
+}
+
+/**
+ * @summary Serve a reduced-size gallery preview
+ */
+export const getGalleryPreview = async (eventId: string,
+    photoId: string, options?: Parameters<typeof customFetch>[1]): Promise<Blob> => {
+
+  return customFetch<Blob>(getGetGalleryPreviewUrl(eventId,photoId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetGalleryPreviewQueryKey = (eventId: string,
+    photoId: string,) => {
+    return [
+    `/api/events/${eventId}/photos/${photoId}/preview`
+    ] as const;
+    }
+
+
+export const getGetGalleryPreviewQueryOptions = <TData = Awaited<ReturnType<typeof getGalleryPreview>>, TError = ErrorType<void>>(eventId: string,
+    photoId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGalleryPreview>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetGalleryPreviewQueryKey(eventId,photoId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getGalleryPreview>>> = ({ signal }) => getGalleryPreview(eventId,photoId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: eventId !== null && eventId !== undefined && photoId !== null && photoId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getGalleryPreview>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetGalleryPreviewQueryResult = NonNullable<Awaited<ReturnType<typeof getGalleryPreview>>>
+export type GetGalleryPreviewQueryError = ErrorType<void>
+
+
+export function useGetGalleryPreview<TData = Awaited<ReturnType<typeof getGalleryPreview>>, TError = ErrorType<void>>(
+ eventId: string,
+    photoId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGalleryPreview>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getGalleryPreview>>,
+          TError,
+          Awaited<ReturnType<typeof getGalleryPreview>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetGalleryPreview<TData = Awaited<ReturnType<typeof getGalleryPreview>>, TError = ErrorType<void>>(
+ eventId: string,
+    photoId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGalleryPreview>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getGalleryPreview>>,
+          TError,
+          Awaited<ReturnType<typeof getGalleryPreview>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetGalleryPreview<TData = Awaited<ReturnType<typeof getGalleryPreview>>, TError = ErrorType<void>>(
+ eventId: string,
+    photoId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGalleryPreview>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Serve a reduced-size gallery preview
+ */
+
+export function useGetGalleryPreview<TData = Awaited<ReturnType<typeof getGalleryPreview>>, TError = ErrorType<void>>(
+ eventId: string,
+    photoId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGalleryPreview>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetGalleryPreviewQueryOptions(eventId,photoId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getDownloadGalleryPhotoUrl = (eventId: string,
+    photoId: string,) => {
+
+
+
+
+  return `/api/events/${eventId}/photos/${photoId}/download`
+}
+
+/**
+ * @summary Download a real original photograph after Google sign-in
+ */
+export const downloadGalleryPhoto = async (eventId: string,
+    photoId: string, options?: Parameters<typeof customFetch>[1]): Promise<Blob> => {
+
+  return customFetch<Blob>(getDownloadGalleryPhotoUrl(eventId,photoId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getDownloadGalleryPhotoQueryKey = (eventId: string,
+    photoId: string,) => {
+    return [
+    `/api/events/${eventId}/photos/${photoId}/download`
+    ] as const;
+    }
+
+
+export const getDownloadGalleryPhotoQueryOptions = <TData = Awaited<ReturnType<typeof downloadGalleryPhoto>>, TError = ErrorType<void>>(eventId: string,
+    photoId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadGalleryPhoto>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getDownloadGalleryPhotoQueryKey(eventId,photoId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof downloadGalleryPhoto>>> = ({ signal }) => downloadGalleryPhoto(eventId,photoId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: eventId !== null && eventId !== undefined && photoId !== null && photoId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof downloadGalleryPhoto>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type DownloadGalleryPhotoQueryResult = NonNullable<Awaited<ReturnType<typeof downloadGalleryPhoto>>>
+export type DownloadGalleryPhotoQueryError = ErrorType<void>
+
+
+export function useDownloadGalleryPhoto<TData = Awaited<ReturnType<typeof downloadGalleryPhoto>>, TError = ErrorType<void>>(
+ eventId: string,
+    photoId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadGalleryPhoto>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof downloadGalleryPhoto>>,
+          TError,
+          Awaited<ReturnType<typeof downloadGalleryPhoto>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useDownloadGalleryPhoto<TData = Awaited<ReturnType<typeof downloadGalleryPhoto>>, TError = ErrorType<void>>(
+ eventId: string,
+    photoId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadGalleryPhoto>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof downloadGalleryPhoto>>,
+          TError,
+          Awaited<ReturnType<typeof downloadGalleryPhoto>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useDownloadGalleryPhoto<TData = Awaited<ReturnType<typeof downloadGalleryPhoto>>, TError = ErrorType<void>>(
+ eventId: string,
+    photoId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadGalleryPhoto>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Download a real original photograph after Google sign-in
+ */
+
+export function useDownloadGalleryPhoto<TData = Awaited<ReturnType<typeof downloadGalleryPhoto>>, TError = ErrorType<void>>(
+ eventId: string,
+    photoId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadGalleryPhoto>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getDownloadGalleryPhotoQueryOptions(eventId,photoId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetGoogleAuthConfigUrl = () => {
+
+
+
+
+  return `/api/auth/config`
+}
+
+/**
+ * @summary Get Google configuration and a short-lived login nonce
+ */
+export const getGoogleAuthConfig = async ( options?: Parameters<typeof customFetch>[1]): Promise<GoogleAuthConfig> => {
+
+  return customFetch<GoogleAuthConfig>(getGetGoogleAuthConfigUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetGoogleAuthConfigQueryKey = () => {
+    return [
+    `/api/auth/config`
+    ] as const;
+    }
+
+
+export const getGetGoogleAuthConfigQueryOptions = <TData = Awaited<ReturnType<typeof getGoogleAuthConfig>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGoogleAuthConfig>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetGoogleAuthConfigQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getGoogleAuthConfig>>> = ({ signal }) => getGoogleAuthConfig({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getGoogleAuthConfig>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetGoogleAuthConfigQueryResult = NonNullable<Awaited<ReturnType<typeof getGoogleAuthConfig>>>
+export type GetGoogleAuthConfigQueryError = ErrorType<unknown>
+
+
+export function useGetGoogleAuthConfig<TData = Awaited<ReturnType<typeof getGoogleAuthConfig>>, TError = ErrorType<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGoogleAuthConfig>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getGoogleAuthConfig>>,
+          TError,
+          Awaited<ReturnType<typeof getGoogleAuthConfig>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetGoogleAuthConfig<TData = Awaited<ReturnType<typeof getGoogleAuthConfig>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGoogleAuthConfig>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getGoogleAuthConfig>>,
+          TError,
+          Awaited<ReturnType<typeof getGoogleAuthConfig>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetGoogleAuthConfig<TData = Awaited<ReturnType<typeof getGoogleAuthConfig>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGoogleAuthConfig>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Google configuration and a short-lived login nonce
+ */
+
+export function useGetGoogleAuthConfig<TData = Awaited<ReturnType<typeof getGoogleAuthConfig>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getGoogleAuthConfig>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetGoogleAuthConfigQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetAuthSessionUrl = () => {
+
+
+
+
+  return `/api/auth/session`
+}
+
+/**
+ * @summary Read the verified Google session
+ */
+export const getAuthSession = async ( options?: Parameters<typeof customFetch>[1]): Promise<AuthSession> => {
+
+  return customFetch<AuthSession>(getGetAuthSessionUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetAuthSessionQueryKey = () => {
+    return [
+    `/api/auth/session`
+    ] as const;
+    }
+
+
+export const getGetAuthSessionQueryOptions = <TData = Awaited<ReturnType<typeof getAuthSession>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAuthSession>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAuthSessionQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAuthSession>>> = ({ signal }) => getAuthSession({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAuthSession>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetAuthSessionQueryResult = NonNullable<Awaited<ReturnType<typeof getAuthSession>>>
+export type GetAuthSessionQueryError = ErrorType<unknown>
+
+
+export function useGetAuthSession<TData = Awaited<ReturnType<typeof getAuthSession>>, TError = ErrorType<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAuthSession>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getAuthSession>>,
+          TError,
+          Awaited<ReturnType<typeof getAuthSession>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetAuthSession<TData = Awaited<ReturnType<typeof getAuthSession>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAuthSession>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getAuthSession>>,
+          TError,
+          Awaited<ReturnType<typeof getAuthSession>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetAuthSession<TData = Awaited<ReturnType<typeof getAuthSession>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAuthSession>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Read the verified Google session
+ */
+
+export function useGetAuthSession<TData = Awaited<ReturnType<typeof getAuthSession>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAuthSession>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetAuthSessionQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGoogleSignInUrl = () => {
+
+
+
+
+  return `/api/auth/google`
+}
 
 /**
  * @summary Verify a Google ID token and create an HttpOnly session
  */
-export const useGoogleSignIn = <TError = ErrorType<void>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof googleSignIn>>,
-      TError,
-      GoogleSignInMutationVariables,
-      TContext
-    >;
-    request?: SecondParameter<typeof customFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof googleSignIn>>,
-  TError,
-  GoogleSignInMutationVariables,
-  TContext
-> => {
-  return useMutation(getGoogleSignInMutationOptions(options), queryClient);
-};
+export const googleSignIn = async (googleCredential: GoogleCredential, options?: Parameters<typeof customFetch>[1]): Promise<AuthSession> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<AuthSession>(getGoogleSignInUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(googleCredential)
+  }
+);}
+
+
+
+
+
+export const getGoogleSignInMutationKey = () => ['googleSignIn'] as const;
+
+export const getGoogleSignInMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof googleSignIn>>, TError,GoogleSignInMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof googleSignIn>>, TError,GoogleSignInMutationVariables, TContext> => {
+
+const mutationKey = getGoogleSignInMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof googleSignIn>>, GoogleSignInMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  googleSignIn(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type GoogleSignInMutationResult = NonNullable<Awaited<ReturnType<typeof googleSignIn>>>
+    export type GoogleSignInMutationBody = BodyType<GoogleCredential>
+    export type GoogleSignInMutationError = ErrorType<void>
+    export type GoogleSignInMutationVariables = {data: BodyType<GoogleCredential>}
+
+    /**
+ * @summary Verify a Google ID token and create an HttpOnly session
+ */
+export const useGoogleSignIn = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof googleSignIn>>, TError,GoogleSignInMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof googleSignIn>>,
+        TError,
+        GoogleSignInMutationVariables,
+        TContext
+      > => {
+      return useMutation(getGoogleSignInMutationOptions(options), queryClient);
+    }
 
 export const getLogoutAuthUrl = () => {
-  return `/api/auth/logout`;
-};
+
+
+
+
+  return `/api/auth/logout`
+}
 
 /**
  * @summary Clear the current browser session
  */
-export const logoutAuth = async (
-  options?: Parameters<typeof customFetch>[1],
-): Promise<void> => {
-  return customFetch<void>(getLogoutAuthUrl(), {
+export const logoutAuth = async ( options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+  return customFetch<void>(getLogoutAuthUrl(),
+  {
     ...options,
-    method: "POST",
-  });
-};
+    method: 'POST'
 
-export const getLogoutAuthMutationKey = () => ["logoutAuth"] as const;
 
-export const getLogoutAuthMutationOptions = <
-  TError = ErrorType<unknown>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof logoutAuth>>,
-    TError,
-    void,
-    TContext
-  >;
-  request?: SecondParameter<typeof customFetch>;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof logoutAuth>>,
-  TError,
-  void,
-  TContext
-> => {
-  const mutationKey = getLogoutAuthMutationKey();
-  const { mutation: mutationOptions, request: requestOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, request: undefined };
+  }
+);}
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof logoutAuth>>,
-    void
-  > = () => {
-    return logoutAuth(requestOptions);
-  };
 
-  return { mutationFn, ...mutationOptions };
-};
 
-export type LogoutAuthMutationResult = NonNullable<
-  Awaited<ReturnType<typeof logoutAuth>>
->;
 
-export type LogoutAuthMutationError = ErrorType<unknown>;
 
-/**
+export const getLogoutAuthMutationKey = () => ['logoutAuth'] as const;
+
+export const getLogoutAuthMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof logoutAuth>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof logoutAuth>>, TError,void, TContext> => {
+
+const mutationKey = getLogoutAuthMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof logoutAuth>>, void> = () => {
+
+
+          return  logoutAuth(requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type LogoutAuthMutationResult = NonNullable<Awaited<ReturnType<typeof logoutAuth>>>
+
+    export type LogoutAuthMutationError = ErrorType<unknown>
+
+
+    /**
  * @summary Clear the current browser session
  */
-export const useLogoutAuth = <TError = ErrorType<unknown>, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof logoutAuth>>,
-      TError,
-      void,
-      TContext
-    >;
-    request?: SecondParameter<typeof customFetch>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof logoutAuth>>,
-  TError,
-  void,
-  TContext
-> => {
-  return useMutation(getLogoutAuthMutationOptions(options), queryClient);
-};
+export const useLogoutAuth = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof logoutAuth>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof logoutAuth>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getLogoutAuthMutationOptions(options), queryClient);
+    }
 
-export const getDownloadEventPhotoUrl = (params: DownloadEventPhotoParams) => {
+export const getDownloadEventPhotoUrl = (params: DownloadEventPhotoParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : String(value));
+      normalizedParams.append(key, value === null ? 'null' : String(value))
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/api/photos/download?${stringifiedParams}`
-    : `/api/photos/download`;
-};
+  return stringifiedParams.length > 0 ? `/api/photos/download?${stringifiedParams}` : `/api/photos/download`
+}
 
 /**
  * @summary Download an allowlisted sample photo after Google sign-in
  */
-export const downloadEventPhoto = async (
-  params: DownloadEventPhotoParams,
-  options?: Parameters<typeof customFetch>[1],
-): Promise<Blob> => {
-  return customFetch<Blob>(getDownloadEventPhotoUrl(params), {
+export const downloadEventPhoto = async (params: DownloadEventPhotoParams, options?: Parameters<typeof customFetch>[1]): Promise<Blob> => {
+
+  return customFetch<Blob>(getDownloadEventPhotoUrl(params),
+  {
     ...options,
-    method: "GET",
-  });
-};
+    method: 'GET'
 
-export const getDownloadEventPhotoQueryKey = (
-  params?: DownloadEventPhotoParams,
+
+  }
+);}
+
+
+
+
+
+export const getDownloadEventPhotoQueryKey = (params?: DownloadEventPhotoParams,) => {
+    return [
+    `/api/photos/download`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getDownloadEventPhotoQueryOptions = <TData = Awaited<ReturnType<typeof downloadEventPhoto>>, TError = ErrorType<void>>(params: DownloadEventPhotoParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadEventPhoto>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
 ) => {
-  return [`/api/photos/download`, ...(params ? [params] : [])] as const;
-};
 
-export const getDownloadEventPhotoQueryOptions = <
-  TData = Awaited<ReturnType<typeof downloadEventPhoto>>,
-  TError = ErrorType<void>,
->(
-  params: DownloadEventPhotoParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof downloadEventPhoto>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof customFetch>;
-  },
-) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getDownloadEventPhotoQueryKey(params);
+  const queryKey =  queryOptions?.queryKey ?? getDownloadEventPhotoQueryKey(params);
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof downloadEventPhoto>>
-  > = ({ signal }) => downloadEventPhoto(params, { signal, ...requestOptions });
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof downloadEventPhoto>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
 
-export type DownloadEventPhotoQueryResult = NonNullable<
-  Awaited<ReturnType<typeof downloadEventPhoto>>
->;
-export type DownloadEventPhotoQueryError = ErrorType<void>;
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof downloadEventPhoto>>> = ({ signal }) => downloadEventPhoto(params, { signal, ...requestOptions });
 
-export function useDownloadEventPhoto<
-  TData = Awaited<ReturnType<typeof downloadEventPhoto>>,
-  TError = ErrorType<void>,
->(
-  params: DownloadEventPhotoParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof downloadEventPhoto>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof downloadEventPhoto>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type DownloadEventPhotoQueryResult = NonNullable<Awaited<ReturnType<typeof downloadEventPhoto>>>
+export type DownloadEventPhotoQueryError = ErrorType<void>
+
+
+export function useDownloadEventPhoto<TData = Awaited<ReturnType<typeof downloadEventPhoto>>, TError = ErrorType<void>>(
+ params: DownloadEventPhotoParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadEventPhoto>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof downloadEventPhoto>>,
           TError,
           Awaited<ReturnType<typeof downloadEventPhoto>>
-        >,
-        "initialData"
-      >;
-    request?: SecondParameter<typeof customFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useDownloadEventPhoto<
-  TData = Awaited<ReturnType<typeof downloadEventPhoto>>,
-  TError = ErrorType<void>,
->(
-  params: DownloadEventPhotoParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof downloadEventPhoto>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useDownloadEventPhoto<TData = Awaited<ReturnType<typeof downloadEventPhoto>>, TError = ErrorType<void>>(
+ params: DownloadEventPhotoParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadEventPhoto>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof downloadEventPhoto>>,
           TError,
           Awaited<ReturnType<typeof downloadEventPhoto>>
-        >,
-        "initialData"
-      >;
-    request?: SecondParameter<typeof customFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useDownloadEventPhoto<
-  TData = Awaited<ReturnType<typeof downloadEventPhoto>>,
-  TError = ErrorType<void>,
->(
-  params: DownloadEventPhotoParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof downloadEventPhoto>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof customFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useDownloadEventPhoto<TData = Awaited<ReturnType<typeof downloadEventPhoto>>, TError = ErrorType<void>>(
+ params: DownloadEventPhotoParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadEventPhoto>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Download an allowlisted sample photo after Google sign-in
  */
 
-export function useDownloadEventPhoto<
-  TData = Awaited<ReturnType<typeof downloadEventPhoto>>,
-  TError = ErrorType<void>,
->(
-  params: DownloadEventPhotoParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof downloadEventPhoto>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof customFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getDownloadEventPhotoQueryOptions(params, options);
+export function useDownloadEventPhoto<TData = Awaited<ReturnType<typeof downloadEventPhoto>>, TError = ErrorType<void>>(
+ params: DownloadEventPhotoParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof downloadEventPhoto>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getDownloadEventPhotoQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return withQueryKey(query, queryOptions.queryKey);
 }
 
+
+
+
+
+
+
 export const getHealthCheckUrl = () => {
-  return `/api/healthz`;
-};
+
+
+
+
+  return `/api/healthz`
+}
 
 /**
  * Returns server health status
  * @summary Health check
  */
-export const healthCheck = async (
-  options?: Parameters<typeof customFetch>[1],
-): Promise<HealthStatus> => {
-  return customFetch<HealthStatus>(getHealthCheckUrl(), {
+export const healthCheck = async ( options?: Parameters<typeof customFetch>[1]): Promise<HealthStatus> => {
+
+  return customFetch<HealthStatus>(getHealthCheckUrl(),
+  {
     ...options,
-    method: "GET",
-  });
-};
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
 
 export const getHealthCheckQueryKey = () => {
-  return [`/api/healthz`] as const;
-};
+    return [
+    `/api/healthz`
+    ] as const;
+    }
 
-export const getHealthCheckQueryOptions = <
-  TData = Awaited<ReturnType<typeof healthCheck>>,
-  TError = ErrorType<unknown>,
->(options?: {
-  query?: Partial<
-    UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>
-  >;
-  request?: SecondParameter<typeof customFetch>;
-}) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getHealthCheckQueryKey();
+export const getHealthCheckQueryOptions = <TData = Awaited<ReturnType<typeof healthCheck>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+) => {
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof healthCheck>>> = ({
-    signal,
-  }) => healthCheck({ signal, ...requestOptions });
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof healthCheck>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  const queryKey =  queryOptions?.queryKey ?? getHealthCheckQueryKey();
 
-export type HealthCheckQueryResult = NonNullable<
-  Awaited<ReturnType<typeof healthCheck>>
->;
-export type HealthCheckQueryError = ErrorType<unknown>;
 
-export function useHealthCheck<
-  TData = Awaited<ReturnType<typeof healthCheck>>,
-  TError = ErrorType<unknown>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>
-    > &
-      Pick<
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof healthCheck>>> = ({ signal }) => healthCheck({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type HealthCheckQueryResult = NonNullable<Awaited<ReturnType<typeof healthCheck>>>
+export type HealthCheckQueryError = ErrorType<unknown>
+
+
+export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, TError = ErrorType<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof healthCheck>>,
           TError,
           Awaited<ReturnType<typeof healthCheck>>
-        >,
-        "initialData"
-      >;
-    request?: SecondParameter<typeof customFetch>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useHealthCheck<
-  TData = Awaited<ReturnType<typeof healthCheck>>,
-  TError = ErrorType<unknown>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>
-    > &
-      Pick<
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof healthCheck>>,
           TError,
           Awaited<ReturnType<typeof healthCheck>>
-        >,
-        "initialData"
-      >;
-    request?: SecondParameter<typeof customFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useHealthCheck<
-  TData = Awaited<ReturnType<typeof healthCheck>>,
-  TError = ErrorType<unknown>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof customFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Health check
  */
 
-export function useHealthCheck<
-  TData = Awaited<ReturnType<typeof healthCheck>>,
-  TError = ErrorType<unknown>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof customFetch>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getHealthCheckQueryOptions(options);
+export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getHealthCheckQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return withQueryKey(query, queryOptions.queryKey);
 }

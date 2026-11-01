@@ -5,6 +5,50 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+export type GalleryUploadInputMime = typeof GalleryUploadInputMime[keyof typeof GalleryUploadInputMime];
+
+
+export const GalleryUploadInputMime = {
+  'image/jpeg': 'image/jpeg',
+  'image/png': 'image/png',
+  'image/webp': 'image/webp',
+} as const;
+
+export interface GalleryUploadInput {
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  name: string;
+  mime: GalleryUploadInputMime;
+  /**
+     * @minimum 1
+     * @maximum 20971520
+     */
+  size: number;
+}
+
+export interface GalleryUploadTicket {
+  id: string;
+  uploadUrl: string;
+}
+
+export interface GalleryPhoto {
+  id: string;
+  file: string;
+  originalName: string;
+  caption: string;
+  tags: string[];
+  time: string;
+  photographer: string;
+}
+
+export interface EventGallery {
+  eventId: string;
+  canUpload: boolean;
+  photos: GalleryPhoto[];
+}
+
 export interface GoogleAuthConfig {
   clientId: string;
   nonce: string;
@@ -13,22 +57,22 @@ export interface GoogleAuthConfig {
 
 export interface GoogleCredential {
   /**
-   * @minLength 1
-   * @maxLength 16384
-   */
+     * @minLength 1
+     * @maxLength 16384
+     */
   credential: string;
   /**
-   * @minLength 32
-   * @maxLength 128
-   */
+     * @minLength 32
+     * @maxLength 128
+     */
   nonce: string;
 }
 
-export type AuthUserProvider =
-  (typeof AuthUserProvider)[keyof typeof AuthUserProvider];
+export type AuthUserProvider = typeof AuthUserProvider[keyof typeof AuthUserProvider];
+
 
 export const AuthUserProvider = {
-  google: "google",
+  google: 'google',
 } as const;
 
 export interface AuthUser {
@@ -49,13 +93,13 @@ export interface HealthStatus {
 }
 
 export type DownloadEventPhotoParams = {
-  file: string;
-  /**
-   * @pattern ^[a-z0-9-]{1,100}$
-   */
-  eventId: string;
-  /**
-   * @pattern ^[a-z0-9-]{1,100}$
-   */
-  photoId: string;
+file: string;
+/**
+ * @pattern ^[a-z0-9-]{1,100}$
+ */
+eventId: string;
+/**
+ * @pattern ^[a-z0-9-]{1,100}$
+ */
+photoId: string;
 };

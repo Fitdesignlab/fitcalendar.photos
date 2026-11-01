@@ -6,9 +6,9 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export type AuthUserProvider =
-  (typeof AuthUserProvider)[keyof typeof AuthUserProvider];
+export type AuthUserProvider = typeof AuthUserProvider[keyof typeof AuthUserProvider];
+
 
 export const AuthUserProvider = {
-  google: "google",
+  google: 'google',
 } as const;

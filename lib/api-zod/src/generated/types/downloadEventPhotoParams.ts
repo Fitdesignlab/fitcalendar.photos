@@ -7,13 +7,13 @@
  */
 
 export type DownloadEventPhotoParams = {
-  file: string;
-  /**
-   * @pattern ^[a-z0-9-]{1,100}$
-   */
-  eventId: string;
-  /**
-   * @pattern ^[a-z0-9-]{1,100}$
-   */
-  photoId: string;
+file: string;
+/**
+ * @pattern ^[a-z0-9-]{1,100}$
+ */
+eventId: string;
+/**
+ * @pattern ^[a-z0-9-]{1,100}$
+ */
+photoId: string;
 };

@@ -6,10 +6,15 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export * from "./authSession";
-export * from "./authUser";
-export * from "./authUserProvider";
-export * from "./downloadEventPhotoParams";
-export * from "./googleAuthConfig";
-export * from "./googleCredential";
-export * from "./healthStatus";
+export * from './authSession';
+export * from './authUser';
+export * from './authUserProvider';
+export * from './downloadEventPhotoParams';
+export * from './eventGallery';
+export * from './galleryPhoto';
+export * from './galleryUploadInput';
+export * from './galleryUploadInputMime';
+export * from './galleryUploadTicket';
+export * from './googleAuthConfig';
+export * from './googleCredential';
+export * from './healthStatus';

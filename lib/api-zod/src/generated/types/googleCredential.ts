@@ -8,13 +8,13 @@
 
 export interface GoogleCredential {
   /**
-   * @minLength 1
-   * @maxLength 16384
-   */
+     * @minLength 1
+     * @maxLength 16384
+     */
   credential: string;
   /**
-   * @minLength 32
-   * @maxLength 128
-   */
+     * @minLength 32
+     * @maxLength 128
+     */
   nonce: string;
 }
