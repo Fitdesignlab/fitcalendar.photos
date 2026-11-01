@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'wouter';
 import { LogOut } from 'lucide-react';
-import { FMark } from './f-mark';
+import { LogoLockup } from './logo-lockup';
 import { useAuth } from '@/context/auth';
 
 export function SiteHeader() {
@@ -10,10 +10,10 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-30 border-b border-[#EDEDED] bg-white/90 text-[#101410] backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between gap-4 px-5 md:h-[72px] md:px-10">
-        <Link href="/" aria-label="Fit Calendar Photos home" data-testid="link-home" className="rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black">
-          <FMark className="h-8 w-8 brightness-0" />
+        <Link href="/" aria-label="Fit Calendar Photos home" data-testid="link-home" className="min-w-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black">
+          <LogoLockup className="text-[12px] min-[380px]:text-[16px] sm:text-[22px]" />
         </Link>
-        <nav className="flex items-center gap-1.5 text-[14px] font-medium sm:gap-2" aria-label="Main">
+        <nav className="flex shrink-0 items-center gap-1.5 text-[14px] font-medium sm:gap-2" aria-label="Main">
           <Link href="/events" data-testid="link-nav-events" aria-current={onEvents ? 'page' : undefined}
             className={'rounded-full px-4 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black ' + (onEvents ? 'bg-[#F2F2F2] text-[#101410]' : 'text-[#5E5E61] hover:text-[#101410]')}>
             Events
