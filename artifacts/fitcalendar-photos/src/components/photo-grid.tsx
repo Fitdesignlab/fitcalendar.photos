@@ -1,4 +1,4 @@
-import { Download, Lock, Maximize2 } from 'lucide-react';
+import { Download, Maximize2 } from 'lucide-react';
 import { photoUrl, type EventPhoto } from '@/lib/events';
 import { useAuth } from '@/context/auth';
 
@@ -21,8 +21,8 @@ export function PhotoGrid({ photos, eventId, onOpen }: { photos: EventPhoto[]; e
               <span className="hidden h-9 w-9 items-center justify-center rounded-full bg-white/15 sm:flex" aria-hidden><Maximize2 className="h-4 w-4" /></span>
               <button onClick={() => requestDownload(p, eventId)} disabled={downloadingId === p.id}
                 aria-label={(user ? 'Download ' : 'Sign in to download ') + p.caption} data-testid={'button-download-' + p.id}
-                className="flex h-9 items-center gap-1.5 rounded-full bg-[#ffffff] px-3 text-xs font-medium text-[#0a0a0a] transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:opacity-60">
-                {user ? <Download className="h-3.5 w-3.5" aria-hidden /> : <Lock className="h-3.5 w-3.5" aria-hidden />}
+                className="photo-download-glass flex h-9 items-center gap-1.5 rounded-full px-3 text-xs font-medium hover:scale-105 disabled:opacity-60">
+                <Download className="h-3.5 w-3.5" aria-hidden />
                 {downloadingId === p.id ? 'Saving' : 'Download'}
               </button>
             </div>

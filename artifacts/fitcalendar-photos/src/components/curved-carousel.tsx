@@ -77,7 +77,7 @@ export function CurvedCarousel({ scale, band, onPick, reduced, className = '' }:
         el.style.height = `${H}px`;
         el.style.clipPath = roundedQuad([[0, lt], [g.w, rt], [g.w, H - rt], [0, H - lt]]);
         const ic = icons.current[i];
-        if (ic) ic.style.transform = `translate(12px, ${H - lt - 12 - 34}px)`;
+        if (ic) ic.style.transform = `translateY(${H - rt - 12 - 34}px)`;
       }
       raf = requestAnimationFrame(frame);
     };
@@ -130,7 +130,7 @@ export function CurvedCarousel({ scale, band, onPick, reduced, className = '' }:
         {photos.map((p, i) => (
           <div key={i} ref={(el) => { cards.current[i] = el; }} className="carousel-card" data-testid={`card-photo-${i}`}>
             <img src={p.src} alt={p.label + ' photo'} draggable={false} />
-            <button ref={(el) => { icons.current[i] = el; }} className="carousel-dl" aria-label={`Download ${p.label} photo`}
+            <button ref={(el) => { icons.current[i] = el; }} className="carousel-dl photo-download-glass" aria-label={`Download ${p.label} photo`}
               onPointerDown={(e) => { st.current.moved = 0; e.stopPropagation(); }}
               onClick={onPick} data-testid={`button-download-${i}`}>
               <Download className="h-[15px] w-[15px]" strokeWidth={2.2} aria-hidden />

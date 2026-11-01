@@ -29,8 +29,7 @@
 .carousel-layer { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
 .carousel-card { position: absolute; left: 0; top: 0; overflow: hidden; background: #EDEDED; will-change: transform; }
 .carousel-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
-.carousel-dl { position: absolute; left: 0; top: 0; width: 34px; height: 34px; border-radius: 999px; display: flex; align-items: center; justify-content: center; color: #0A0A0A; background: rgba(255,255,255,.72); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); cursor: pointer; transition: background-color .2s; }
-.carousel-dl:hover { background: #fff; }
+.carousel-dl { position: absolute; right: 12px; top: 0; width: 34px; height: 34px; border-radius: 999px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
 @keyframes lp-drop { from { opacity: 0; transform: translateY(-24px); } }
 @keyframes lp-pop { 0% { opacity: 0; transform: scale(.82); } 70% { opacity: 1; transform: scale(1.04); } 100% { transform: none; } }
