@@ -30,7 +30,7 @@ _Populate as you build — non-obvious choices a reader couldn't infer from the 
 
 ## Product
 
-- The Photos web application serves `/`; `/event/:eventId` must work on direct navigation and refresh.
+- The Photos web application serves the unchanged landing hero at `/`, an events list at `/events`, and galleries at `/event/:eventId`. All routes must work on direct navigation and refresh.
 - Google and Apple sign-in are explicitly requested demo stubs, not production authentication. Only public sample imagery is used.
 - Downloads require demo sign-in. `PAYMENTS_ENABLED` stays `false`; Ziina remains inactive.
 
@@ -38,7 +38,7 @@ _Populate as you build — non-obvious choices a reader couldn't infer from the 
 
 - White one-screen Reelmark-style landing hero with a curved, draggable sports photo carousel. UI is strictly black, white and neutral grey; full-colour real sports photos are the only colour.
 - Fit Calendar F-mark only in the header, no wordmark or slogan. No em dashes in rendered UI.
-- Landing Log in, Sign up and Get your photos actions open demo provider selection, then go to the event gallery. Gallery download sign-in must still resume its pending download.
+- Landing Log in, Sign up and Get your photos actions open demo provider selection, then go to `/events`. Gallery download sign-in must still resume its pending download without redirecting.
 - H1 exactly: "Your event. Your photos. One place."
 - Subtitle exactly: "Find every shot from the race, the padel night, or the festival, then download them after you sign in."
 - Do not add "free" to the subtitle.

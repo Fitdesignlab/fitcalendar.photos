@@ -6,6 +6,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
 import Home from '@/pages/home';
 import EventPage from '@/pages/event';
+import EventsPage from '@/pages/events';
 import { DemoAuthProvider } from '@/context/demo-auth';
 import { SignInDialog } from '@/components/sign-in-dialog';
 import {
@@ -24,6 +25,7 @@ function Router() {
     <RoutedErrorBoundary>
       <Switch>
         <Route path="/" component={Home} />
+        <Route path="/events" component={EventsPage} />
         <Route path="/event/:eventId" component={EventPage} />
         <Route component={NotFound} />
       </Switch>

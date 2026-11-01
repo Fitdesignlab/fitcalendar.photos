@@ -78,7 +78,7 @@ export function DemoAuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthCtx.Provider value={{
       user, dialogOpen, pending, downloadingId,
-      openSignIn: (opts) => { redirectRef.current = opts?.redirectTo ?? null; setPending(null); setDialogOpen(true); },
+      openSignIn: (opts) => { redirectRef.current = opts?.redirectTo ?? '/events'; setPending(null); setDialogOpen(true); },
       closeSignIn: () => { redirectRef.current = null; setDialogOpen(false); setPending(null); },
       signIn, signOut, requestDownload,
     }}>

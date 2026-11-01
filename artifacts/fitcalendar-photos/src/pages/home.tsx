@@ -42,7 +42,7 @@ export default function Home() {
   const { openSignIn } = useDemoAuth();
   const { w, h } = useViewport();
   const reduced = useReducedMotion();
-  const go = () => openSignIn({ redirectTo: '/event/demo' });
+  const go = () => openSignIn({ redirectTo: '/events' });
 
   if (w <= 820) {
     const s = w / 640;
