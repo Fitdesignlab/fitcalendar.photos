@@ -24,7 +24,7 @@ Build output: `artifacts/fitcalendar-photos/dist/public`.
 
 ## Routes
 
-- `/` — photo discovery homepage.
+- `/` — black-and-white Reelmark-style hero with a curved photo carousel.
 - `/event/:eventId` — event gallery, including a missing-event state.
 
 The production artifact serves static build output at `/`, with an SPA rewrite to `/index.html` for direct event links.

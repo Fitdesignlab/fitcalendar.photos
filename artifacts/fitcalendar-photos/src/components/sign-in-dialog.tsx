@@ -7,10 +7,10 @@ export function SignInDialog() {
   const { dialogOpen, closeSignIn, signIn, pending } = useDemoAuth();
   return (
     <Dialog open={dialogOpen} onOpenChange={(o) => { if (!o) closeSignIn(); }}>
-      <DialogContent className="max-w-[400px] rounded-[28px] border border-[#E6E6E6] bg-white p-8 text-[#101410] shadow-none sm:rounded-[28px]" data-testid="dialog-signin">
+      <DialogContent className="max-w-[400px] rounded-[28px] border border-[#E6E6E6] bg-white p-8 text-[#000] shadow-none sm:rounded-[28px]" data-testid="dialog-signin">
         <FMark className="h-9 w-9 brightness-0" />
         <DialogHeader className="mt-4 space-y-2 text-left">
-          <DialogTitle className="font-[Inter_Tight] text-[30px] font-bold leading-[1.05] tracking-[-0.03em] text-[#101410]">
+          <DialogTitle className="font-[Inter_Tight] text-[30px] font-bold leading-[1.05] tracking-[-0.03em] text-[#000]">
             {pending ? 'Sign in to download.' : 'Sign in to get your photos.'}
           </DialogTitle>
           <DialogDescription className="text-[15px] leading-6 text-[#5E5E61]">
@@ -21,7 +21,7 @@ export function SignInDialog() {
         </DialogHeader>
         <div className="mt-6 space-y-2.5">
           <button onClick={() => signIn('google')} data-testid="button-signin-google"
-            className="flex h-12 w-full items-center justify-center gap-3 rounded-full border border-[#D9D9D9] bg-white text-[15px] font-medium text-[#101410] transition-colors hover:border-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2">
+            className="flex h-12 w-full items-center justify-center gap-3 rounded-full border border-[#D9D9D9] bg-white text-[15px] font-medium text-[#000] transition-colors hover:border-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2">
             <SiGoogle className="h-4 w-4" aria-hidden /> Continue with Google
           </button>
           <button onClick={() => signIn('apple')} data-testid="button-signin-apple"
