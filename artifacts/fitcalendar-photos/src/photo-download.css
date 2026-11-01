@@ -10,8 +10,8 @@
   color: #fff;
   background: rgba(255, 255, 255, .14);
   border: calc(.6px / var(--photo-download-scale, 1)) solid rgba(255, 255, 255, .22);
-  backdrop-filter: blur(calc(8px / var(--photo-download-scale, 1)));
   -webkit-backdrop-filter: blur(calc(8px / var(--photo-download-scale, 1)));
+  backdrop-filter: blur(calc(8px / var(--photo-download-scale, 1)));
 }
 .photo-download-glass svg {
   width: calc(14px / var(--photo-download-scale, 1));
