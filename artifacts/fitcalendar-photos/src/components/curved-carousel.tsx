@@ -1,5 +1,5 @@
 import { useEffect, useRef, type CSSProperties, type KeyboardEvent, type PointerEvent } from 'react';
-import { Download } from 'lucide-react';
+import { GlassDownloadGlyph } from './glass-download-glyph';
 import { CAROUSEL_PITCH as PITCH, carouselCardCount, carouselGeometry } from '@/lib/carousel-geometry';
 
 const BASE = import.meta.env.BASE_URL;
@@ -133,7 +133,7 @@ export function CurvedCarousel({ scale, band, onPick, reduced, className = '' }:
             <button ref={(el) => { icons.current[i] = el; }} className="carousel-dl photo-download-glass" aria-label={`Download ${p.label} photo`}
               onPointerDown={(e) => { st.current.moved = 0; e.stopPropagation(); }}
               onClick={onPick} data-testid={`button-download-${i}`}>
-              <Download strokeWidth={2} aria-hidden />
+              <GlassDownloadGlyph />
             </button>
           </div>
         ))}

@@ -1,8 +1,9 @@
-import { Download, Maximize2 } from 'lucide-react';
+import { Maximize2 } from 'lucide-react';
 import { photoUrl, type EventPhoto } from '@/lib/events';
 import { useAuth } from '@/context/auth';
+import { GlassDownloadGlyph } from './glass-download-glyph';
 
-export function PhotoGrid({ photos, eventId, onOpen }: { photos: EventPhoto[]; eventId: string; onOpen: (i: number) => void }) {
+export function PhotoGrid({ photos, eventId, onOpen, onRemove }: { photos: EventPhoto[]; eventId: string; onOpen: (i: number) => void; onRemove?: (id: string) => void }) {
   const { user, requestDownload, downloadingId } = useAuth();
   return (
     <ul className="columns-1 gap-4 sm:columns-2 lg:columns-3 [&>li]:mb-4">
@@ -12,6 +13,12 @@ export function PhotoGrid({ photos, eventId, onOpen }: { photos: EventPhoto[]; e
             <img src={photoUrl(p.file)} alt={p.caption} loading="lazy"
               className={'w-full object-cover transition-transform duration-700 group-hover:scale-[1.03] ' + (i % 3 === 1 ? 'aspect-[4/5]' : 'aspect-[3/2]')} />
           </button>
+          {onRemove && (
+            <button type="button" onClick={() => onRemove(p.id)} data-testid={'button-admin-remove-' + p.id}
+              className="absolute left-3 top-3 z-10 rounded-full bg-white px-3 py-1.5 text-[12px] font-medium text-[#101410] shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black">
+              Remove
+            </button>
+          )}
           <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-black/75 to-transparent p-4 pt-16 text-[#ffffff]">
             <div className="min-w-0">
               <p className="truncate text-sm font-medium">{p.caption}</p>
@@ -23,7 +30,7 @@ export function PhotoGrid({ photos, eventId, onOpen }: { photos: EventPhoto[]; e
                 aria-busy={downloadingId === p.id}
                 aria-label={(user ? 'Download ' : 'Sign in to download ') + p.caption} data-testid={'button-download-' + p.id}
                 className="photo-download-glass relative left-1 top-1 disabled:opacity-60">
-                <Download className="h-3.5 w-3.5" aria-hidden />
+                <GlassDownloadGlyph />
                 <span className="sr-only">{downloadingId === p.id ? 'Saving' : 'Download'}</span>
               </button>
             </div>

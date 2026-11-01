@@ -8,6 +8,7 @@ import Home from '@/pages/home';
 import EventPage from '@/pages/event';
 import EventsPage from '@/pages/events';
 import TermsPage from '@/pages/terms';
+import AdminPage from '@/pages/admin';
 import { AuthProvider } from '@/context/auth';
 import { SignInDialog } from '@/components/sign-in-dialog';
 import {
@@ -29,6 +30,7 @@ function Router() {
         <Route path="/events" component={EventsPage} />
         <Route path="/event/:eventId" component={EventPage} />
         <Route path="/terms" component={TermsPage} />
+        <Route path="/admin" component={AdminPage} />
         <Route component={NotFound} />
       </Switch>
     </RoutedErrorBoundary>

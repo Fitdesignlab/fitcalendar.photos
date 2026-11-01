@@ -36,6 +36,7 @@ export const CATEGORY_LABEL: Record<Category, string> = {
   pilates: 'Pilates',
 };
 
+// The public catalogue is Fit Calendar event 369 only.
 export const EVENTS: PhotoEvent[] = [
   {
     id: '369',
@@ -49,7 +50,7 @@ export const EVENTS: PhotoEvent[] = [
   },
 ];
 
-export const getEvent = (id: string) => EVENTS.find((e) => e.id === id);
+export const getEvent = (id: string) => id === '369' ? EVENTS.find((e) => e.id === '369') : undefined;
 
 export const formatDate = (iso: string) =>
   new Date(iso + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
