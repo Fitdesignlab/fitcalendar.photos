@@ -22,7 +22,7 @@ export function PhotoGrid({ photos, eventId, onOpen, onRemove }: { photos: Event
           <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-black/75 to-transparent p-4 pt-16 text-[#ffffff]">
             <div className="min-w-0">
               <p className="truncate text-sm font-medium">{p.caption}</p>
-              <p className="text-[12px] text-white/75">{p.time}{p.bib ? ' / Bib ' + p.bib : ''} / {p.photographer}</p>
+              {(p.time || p.bib || p.photographer) && <p className="text-[12px] text-white/75">{[p.time, p.bib && 'Bib ' + p.bib, p.photographer && 'by ' + p.photographer].filter(Boolean).join(' / ')}</p>}
             </div>
             <div className="pointer-events-auto flex shrink-0 items-end gap-1.5">
               <span className="hidden h-9 w-9 items-center justify-center rounded-full bg-white/15 sm:flex" aria-hidden><Maximize2 className="h-4 w-4" /></span>

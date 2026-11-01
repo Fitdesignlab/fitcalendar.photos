@@ -1,17 +1,16 @@
 import { useMemo, useState, useCallback } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from 'wouter';
 import { ArrowLeft, CalendarDays, Camera, Lock, MapPin, Search } from 'lucide-react';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { PhotoGrid } from '@/components/photo-grid';
 import { Lightbox } from '@/components/lightbox';
-import { AdminUpload } from '@/components/admin-upload';
 import { CATEGORY_LABEL, formatDate, getEvent, photoUrl } from '@/lib/events';
-import { isAdmin, LIVE_EVENT_ID } from '@/lib/admin';
-import { deleteEventPhoto, fetchEventPhotos } from '@/lib/gallery';
 import { useAuth } from '@/context/auth';
 import { usePageMeta } from '@/lib/use-page-meta';
+import { useQueryClient } from '@tanstack/react-query';
+import { useEventGallery, getGetEventGalleryQueryKey } from '@/lib/use-event-gallery';
+import { GalleryAdmin } from '@/components/gallery-admin';
 
 const pill = 'inline-flex h-12 w-fit items-center gap-2 rounded-full bg-black px-6 text-[15px] font-medium text-white transition-opacity hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2';
 
@@ -19,31 +18,24 @@ export default function EventPage() {
   const { eventId = '' } = useParams<{ eventId: string }>();
   const event = getEvent(eventId);
   const { user, openSignIn } = useAuth();
-  const cache = useQueryClient();
-  const gallery = useQuery({
-    queryKey: ['event-photos', eventId],
-    queryFn: () => fetchEventPhotos(eventId),
-    enabled: eventId === LIVE_EVENT_ID,
-  });
   const [tag, setTag] = useState('all');
   const [bib, setBib] = useState('');
-  const [open, setOpen] = useState<number | null>(null);
-  const onChange = useCallback((i: number | null) => setOpen(i), []);
+  const [openId, setOpenId] = useState<string | null>(null);
+  const gallery = useEventGallery(eventId);
+  const cache = useQueryClient();
+  const allPhotos = useMemo(() => gallery.data?.photos ?? [], [gallery.data]);
 
   usePageMeta(
     event ? event.name + ' photos | Fit Calendar Photos' : 'Event not found | Fit Calendar Photos',
     event ? 'Event photo gallery for ' + event.name + ', ' + event.city + ', ' + formatDate(event.date) + '.' : 'This event could not be found. Browse available events.',
   );
 
-  const uploaded = event?.id === LIVE_EVENT_ID ? (gallery.data ?? []) : [];
-  const tags = useMemo(() => Array.from(new Set(uploaded.flatMap((p) => p.tags))), [uploaded]);
-  const photos = useMemo(() => uploaded.filter((p) =>
+  const tags = useMemo(() => Array.from(new Set(allPhotos.flatMap((p) => p.tags))), [allPhotos]);
+  const photos = useMemo(() => allPhotos.filter((p) =>
     (tag === 'all' || p.tags.includes(tag)) &&
-    (!bib.trim() || (p.bib ?? '').includes(bib.trim()) || p.photographer.toLowerCase().includes(bib.trim().toLowerCase()))), [uploaded, tag, bib]);
-  const removePhoto = useCallback(async (id: string) => {
-    await deleteEventPhoto(eventId, id);
-    await cache.invalidateQueries({ queryKey: ['event-photos', eventId] });
-  }, [cache, eventId]);
+    (!bib.trim() || p.caption.toLowerCase().includes(bib.trim().toLowerCase()) || p.photographer.toLowerCase().includes(bib.trim().toLowerCase()))), [allPhotos, tag, bib]);
+  const selectedIndex = photos.findIndex((p) => p.id === openId);
+  const onChange = useCallback((i: number | null) => setOpenId(i === null ? null : photos[i]?.id ?? null), [photos]);
 
   if (!event) {
     return (
@@ -86,18 +78,26 @@ export default function EventPage() {
           </div>
         </section>
 
-        {isAdmin(user) && <AdminUpload eventId={event.id} />}
-
-        {!user && uploaded.length > 0 && (
+        {user && gallery.data?.canUpload && (
+          <div className="mt-10">
+            <GalleryAdmin eventId={event.id} photos={allPhotos} onChanged={() => cache.invalidateQueries({ queryKey: getGetEventGalleryQueryKey(event.id) })} />
+          </div>
+        )}
+        {gallery.isPending && <p className="mt-12 text-[#6E6E73]" role="status" data-testid="status-gallery-loading">Loading event photos...</p>}
+        {gallery.isError && (
+          <div className="mt-10 rounded-[24px] border border-[#D9D9D9] p-6" role="alert" data-testid="status-gallery-error">
+            <p>We could not load the latest event photos. Please try again.</p>
+            <button onClick={() => void gallery.refetch()} className={pill + ' mt-4'}>Retry</button>
+          </div>
+        )}
+        {!user && allPhotos.length > 0 && (
           <div className="mt-12 flex flex-col gap-4 rounded-[28px] bg-[#F5F5F5] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
             <p className="flex items-center gap-3 text-[15px] text-[#5E5E61]"><Lock className="h-4 w-4 shrink-0 text-[#101410]" aria-hidden /> Browse everything. Sign in with Google to download photos.</p>
             <button onClick={() => openSignIn()} data-testid="button-banner-signin" className="h-11 shrink-0 rounded-full bg-black px-5 text-[14px] font-medium text-white hover:opacity-85">Log in</button>
           </div>
         )}
 
-        {event.id === LIVE_EVENT_ID && gallery.isPending ? (
-          <p className="mt-12 text-[15px] text-[#6E6E73]" data-testid="status-gallery-loading">Loading photos</p>
-        ) : uploaded.length === 0 ? (
+        {gallery.data && (allPhotos.length === 0 ? (
           <div className="mt-12 rounded-[28px] border border-dashed border-[#D9D9D9] px-6 py-20 text-center" data-testid="status-empty-gallery">
             <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#F2F2F2]"><Camera className="h-6 w-6" aria-hidden /></span>
             <p className="mt-5 font-[Inter_Tight] text-[32px] font-bold tracking-[-0.03em]">No photos available yet.</p>
@@ -115,24 +115,24 @@ export default function EventPage() {
               </div>
               <div className="flex h-11 items-center gap-2 rounded-full border border-[#D9D9D9] px-4 focus-within:border-black md:w-72">
                 <Search className="h-4 w-4 text-[#6E6E73]" aria-hidden />
-                <label htmlFor="bib" className="sr-only">Filter by bib or photographer</label>
-                <input id="bib" value={bib} onChange={(e) => setBib(e.target.value)} placeholder="Bib or photographer" data-testid="input-bib"
+                <label htmlFor="bib" className="sr-only">Search photos by filename or photographer</label>
+                <input id="bib" value={bib} onChange={(e) => setBib(e.target.value)} placeholder="Search photos" data-testid="input-bib"
                   className="w-full bg-transparent text-[15px] outline-none placeholder:text-[#9A9A9E]" />
               </div>
             </div>
             <p className="mb-5 mt-6 text-[14px] text-[#6E6E73]" data-testid="text-photo-count">{photos.length} {photos.length === 1 ? 'photo' : 'photos'}</p>
             {photos.length ? (
-              <PhotoGrid key={tag + bib} photos={photos} eventId={event.id} onOpen={setOpen} onRemove={isAdmin(user) ? (id) => { void removePhoto(id); } : undefined} />
+              <PhotoGrid key={tag + bib} photos={photos} eventId={event.id} onOpen={(i) => setOpenId(photos[i]!.id)} />
             ) : (
               <div className="rounded-[28px] bg-[#F5F5F5] px-6 py-16 text-center" data-testid="status-no-photos">
                 <p className="font-[Inter_Tight] text-[32px] font-bold tracking-[-0.03em]">No match in this gallery.</p>
-                <p className="mt-2 text-[#6E6E73]">Try another bib number or clear the filters.</p>
+                <p className="mt-2 text-[#6E6E73]">Try another filename or clear the filters.</p>
                 <button onClick={() => { setTag('all'); setBib(''); }} data-testid="button-clear-filters" className="mt-6 h-12 rounded-full bg-black px-6 text-[15px] font-medium text-white hover:opacity-85">Clear filters</button>
               </div>
             )}
-            <Lightbox photos={photos} index={open} eventId={event.id} onChange={onChange} />
+            <Lightbox photos={photos} index={selectedIndex < 0 ? null : selectedIndex} eventId={event.id} onChange={onChange} />
           </>
-        )}
+        ))}
       </main>
       <SiteFooter />
     </div>

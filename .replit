@@ -1,4 +1,4 @@
-modules = ["nodejs-24"]
+modules = ["nodejs-24", "python-base-3.13"]
 
 [deployment]
 router = "application"
@@ -24,3 +24,6 @@ timeoutMs = 20000
 [userenv.shared]
 GOOGLE_ALLOWED_ORIGINS = "https://fitcalendar.photos,https://fit-fotos.replit.app"
 GOOGLE_CLIENT_ID = "628322817922-2oftknpn08ji1nd7jk8uispive6pume9.apps.googleusercontent.com"
+
+[nix]
+channel = "stable-25_05"

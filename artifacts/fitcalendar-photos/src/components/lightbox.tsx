@@ -38,7 +38,7 @@ export function Lightbox({ photos, index, eventId, onChange }: Props) {
               <div>
                 <DialogTitle className="font-[Inter_Tight] text-[22px] font-bold tracking-[-0.02em]">{p.caption}</DialogTitle>
                 <DialogDescription className="text-[13px] text-[#6E6E73]">
-                  Photo {index + 1} of {n} / {p.time}{p.bib ? ' / Bib ' + p.bib : ''} / by {p.photographer}
+                  Photo {index + 1} of {n}{[p.time, p.bib && 'Bib ' + p.bib, p.photographer && 'by ' + p.photographer].filter(Boolean).map((part) => ' / ' + part).join('')}
                 </DialogDescription>
               </div>
               <button onClick={() => requestDownload(p, eventId)} disabled={downloadingId === p.id} data-testid="button-lightbox-download"

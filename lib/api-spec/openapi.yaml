@@ -11,6 +11,116 @@ tags:
   - name: health
     description: Health operations
 paths:
+  /events/{eventId}/photos:
+    parameters:
+      - $ref: "#/components/parameters/EventId"
+    get:
+      operationId: getEventGallery
+      summary: List published event photographs and current upload permission
+      responses:
+        "200":
+          description: Gallery
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventGallery"
+        "404":
+          description: Event not available
+  /events/{eventId}/photos/uploads:
+    parameters:
+      - $ref: "#/components/parameters/EventId"
+    post:
+      operationId: requestGalleryUpload
+      summary: Admin only, reserve a photograph and request a private upload URL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GalleryUploadInput"
+      responses:
+        "201":
+          description: Upload reservation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GalleryUploadTicket"
+        "401":
+          description: Google session required
+        "403":
+          description: Admin required
+        "400":
+          description: Invalid image metadata
+  /events/{eventId}/photos/{photoId}/complete:
+    parameters:
+      - $ref: "#/components/parameters/EventId"
+      - $ref: "#/components/parameters/PhotoId"
+    post:
+      operationId: completeGalleryUpload
+      summary: Admin only, validate the actual image and publish its gallery preview
+      responses:
+        "200":
+          description: Published photograph
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GalleryPhoto"
+        "400":
+          description: Invalid image or expired reservation
+        "403":
+          description: Admin required
+        "404":
+          description: Upload not found
+  /events/{eventId}/photos/{photoId}:
+    parameters:
+      - $ref: "#/components/parameters/EventId"
+      - $ref: "#/components/parameters/PhotoId"
+    delete:
+      operationId: deleteGalleryPhoto
+      summary: Admin only, remove a photograph from the gallery
+      responses:
+        "204":
+          description: Removed
+        "403":
+          description: Admin required
+        "404":
+          description: Photo not found
+  /events/{eventId}/photos/{photoId}/preview:
+    parameters:
+      - $ref: "#/components/parameters/EventId"
+      - $ref: "#/components/parameters/PhotoId"
+    get:
+      operationId: getGalleryPreview
+      summary: Serve a reduced-size gallery preview
+      responses:
+        "200":
+          description: JPEG preview
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: Photo not found
+  /events/{eventId}/photos/{photoId}/download:
+    parameters:
+      - $ref: "#/components/parameters/EventId"
+      - $ref: "#/components/parameters/PhotoId"
+    get:
+      operationId: downloadGalleryPhoto
+      summary: Download a real original photograph after Google sign-in
+      responses:
+        "200":
+          description: Original photograph
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        "401":
+          description: Google sign-in required
+        "404":
+          description: Photo not found
   /auth/config:
     get:
       operationId: getGoogleAuthConfig
@@ -109,7 +219,77 @@ paths:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
 components:
+  parameters:
+    EventId:
+      in: path
+      name: eventId
+      required: true
+      schema:
+        type: string
+    PhotoId:
+      in: path
+      name: photoId
+      required: true
+      schema:
+        type: string
+        format: uuid
   schemas:
+    GalleryUploadInput:
+      type: object
+      required: [name, mime, size]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        mime:
+          type: string
+          enum: [image/jpeg, image/png, image/webp]
+        size:
+          type: integer
+          minimum: 1
+          maximum: 20971520
+    GalleryUploadTicket:
+      type: object
+      required: [id, uploadUrl]
+      properties:
+        id:
+          type: string
+          format: uuid
+        uploadUrl:
+          type: string
+    GalleryPhoto:
+      type: object
+      required: [id, file, originalName, caption, tags, time, photographer]
+      properties:
+        id:
+          type: string
+        file:
+          type: string
+        originalName:
+          type: string
+        caption:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        time:
+          type: string
+        photographer:
+          type: string
+    EventGallery:
+      type: object
+      required: [eventId, canUpload, photos]
+      properties:
+        eventId:
+          type: string
+        canUpload:
+          type: boolean
+        photos:
+          type: array
+          items:
+            $ref: "#/components/schemas/GalleryPhoto"
     GoogleAuthConfig:
       type: object
       required: [clientId, nonce, allowedOrigins]
