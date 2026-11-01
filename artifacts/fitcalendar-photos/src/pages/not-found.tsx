@@ -3,7 +3,7 @@ import { SiteHeader } from '@/components/site-header';
 import { usePageMeta } from '@/lib/use-page-meta';
 
 export default function NotFound() {
-  usePageMeta('Page not found | Fit Calendar Photos', 'This page does not exist. Browse example events instead.');
+  usePageMeta('Page not found | Fit Calendar Photos', 'This page does not exist. Browse available events instead.');
   return (
     <div className="flex min-h-[100dvh] flex-col bg-white text-[#101410]">
       <SiteHeader />

@@ -15,13 +15,14 @@ export default function EventsPage() {
   const [q, setQ] = useState('');
   const gallery = useEventGallery('369');
   const photoCount = gallery.data?.photos.length;
-  const cats = useMemo(() => Array.from(new Set(EVENTS.map((e) => e.category))), []);
+  const catalogue = useMemo(() => EVENTS.filter((event) => event.id === '369'), []);
+  const cats = useMemo(() => Array.from(new Set(catalogue.map((e) => e.category))), [catalogue]);
   const list = useMemo(() => {
     const s = q.trim().toLowerCase();
-    return [...EVENTS]
+    return [...catalogue]
       .sort((a, b) => b.date.localeCompare(a.date))
       .filter((e) => (filter === 'all' || e.category === filter) && (!s || (e.name + ' ' + e.city).toLowerCase().includes(s)));
-  }, [filter, q]);
+  }, [catalogue, filter, q]);
 
   return (
     <div className="flex min-h-[100dvh] flex-col bg-white text-[#101410]">
@@ -29,7 +30,7 @@ export default function EventsPage() {
       <main className="mx-auto w-full max-w-[1280px] flex-1 px-5 pb-24 pt-12 md:px-10 md:pt-20">
         <section className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <div className="rise max-w-2xl">
-            <p className="text-[14px] font-medium text-[#6E6E73]" data-testid="text-events-count">{EVENTS.length} available event{EVENTS.length === 1 ? '' : 's'}{photoCount !== undefined ? ` / ${photoCount} ${photoCount === 1 ? 'photo' : 'photos'}` : ''}</p>
+            <p className="text-[14px] font-medium text-[#6E6E73]" data-testid="text-events-count">{catalogue.length} available event{catalogue.length === 1 ? '' : 's'}{photoCount !== undefined ? ` / ${photoCount} ${photoCount === 1 ? 'photo' : 'photos'}` : ''}</p>
             <h1 className="mt-3 font-[Inter_Tight] text-[44px] font-bold leading-[1.02] tracking-[-0.035em] md:text-[72px]" data-testid="text-events-title">
               Find your event.<br /><span className="text-[#9A9A9E]">Take it home.</span>
             </h1>
@@ -56,7 +57,7 @@ export default function EventsPage() {
 
         {list.length ? (
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-12 md:grid-cols-2 lg:grid-cols-3" data-testid="list-events">
-            {list.map((e, i) => <EventCard key={e.id} event={e} index={i} photoCount={photoCount} feature={i === 0 && filter === 'all' && !q.trim()} />)}
+            {list.map((e, i) => <EventCard key={e.id} event={e} index={i} photoCount={e.id === '369' ? photoCount : 0} feature={i === 0 && filter === 'all' && !q.trim()} />)}
           </div>
         ) : (
           <div className="mt-16 rounded-[28px] bg-[#F5F5F5] px-6 py-20 text-center" data-testid="status-no-events">

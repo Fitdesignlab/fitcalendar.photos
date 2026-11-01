@@ -1,12 +1,12 @@
 ---
 name: Wordmark provenance
-description: Origin and limitations of the Photos header SVG and FitCalendar footer brand assets.
+description: Canonical supplied Photos vector artwork versus older locally generated logo approximations.
 ---
 
-The active SVG logos reuse artwork from the main FitCalendar site's public `/wordmark.webp` and `/fitcalendar-mark.png` assets. Those white-on-transparent assets were normalized to black. The Photos header combines the wordmark with embedded Michroma lettering in one self-contained SVG; the footer uses the real stylized F mark and wordmark.
+The user-supplied Photos wordmark in the canonical GitHub source is the preferred header artwork. It is a path-based vector SVG, not a font reconstruction. The same source supplies the footer F-mark image.
 
-These SVGs contain embedded raster brand artwork, not newly traced vector paths or an official Figma export. The older standalone PNG wordmark was a browser export using Racing Sans One and Archivo Black; it is retained for compatibility, but is no longer the active header/footer logo.
+Earlier locally generated SVGs embedded raster main-site brand artwork plus Michroma lettering; an older PNG approximation used Racing Sans One and Archivo Black. Those legacy assets should not replace the supplied vector or be described as original Figma exports.
 
-**Why:** The user requested a single-line FITCALENDAR.PHOTOS SVG on every page and the actual main-site F mark in the footer. Reusing the site's artwork avoids another font-based approximation and preserves the image-only branding rule.
+**Why:** The user explicitly requested syncing the approved GitHub main artwork into this Repl rather than keeping the earlier local interpretation.
 
-**How to apply:** Reuse the image rather than reconstructing the brand with HTML text. Do not describe the asset as retrieved from Figma. If an original official asset becomes available, use it as the reference for any replacement.
+**How to apply:** Reuse the supplied SVG across all page headers and the sign-in dialog, without retyping the brand or rebuilding its fonts. Describe its provenance as supplied through GitHub, not retrieved through a Figma connector.

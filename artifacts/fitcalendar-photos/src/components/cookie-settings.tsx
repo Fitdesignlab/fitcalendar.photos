@@ -10,8 +10,8 @@ export function CookieSettings() {
 
   useEffect(() => {
     const show = () => { setError(false); setOpen(true); };
-    window.addEventListener('photos:cookie-settings', show);
-    return () => window.removeEventListener('photos:cookie-settings', show);
+    window.addEventListener('fitcalendar:cookie-settings', show);
+    return () => window.removeEventListener('fitcalendar:cookie-settings', show);
   }, []);
 
   const save = () => {
