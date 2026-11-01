@@ -1,31 +1,18 @@
 import { useEffect, useRef, type KeyboardEvent, type PointerEvent } from 'react';
 import { Download } from 'lucide-react';
+import { CAROUSEL_PITCH as PITCH, carouselCardCount, carouselGeometry } from '@/lib/carousel-geometry';
 
 const BASE = import.meta.env.BASE_URL;
 export const LANDING_PHOTOS = [
   'Running', 'Padel', 'Cycling', 'Triathlon', 'Festival', 'Marathon', 'Padel doubles', 'Marathon finish', 'Triathlon swim', 'Indoor padel',
 ].map((label, i) => ({ src: `${BASE}landing/sport-${i}.jpg`, label }));
 
-const N = LANDING_PHOTOS.length;
-const PITCH = 196;
-const LOOP = N * PITCH;
 const AUTO = 50; // design units per second, right to left
 const DECAY = 0.05; // momentum keeps 5% of itself after one second (95% decays)
 const R = 15;
 
 interface Band { left: number; top: number; width: number; height: number }
 interface Props { scale: number; band: Band; onPick: () => void; reduced: boolean; className?: string }
-
-function geo(t: number) {
-  const x = 720 + t * (1 + 0.083 * (t / 706) ** 2);
-  const d = Math.abs(x - 720) / 706;
-  const w = 170 + 48 * d * d;
-  const xl = x - w / 2, xr = x + w / 2;
-  const hl = 280 + 92 * (Math.abs(xl - 720) / 706) ** 2.6;
-  const hr = 280 + 92 * (Math.abs(xr - 720) / 706) ** 2.6;
-  const cy = 687 - 12 * d * d;
-  return { xl, xr, w, hl, hr, cy };
-}
 
 function roundedQuad(p: [number, number][]) {
   const n = p.length;
@@ -44,18 +31,21 @@ function roundedQuad(p: [number, number][]) {
 }
 
 export function CurvedCarousel({ scale, band, onPick, reduced, className = '' }: Props) {
+  const count = carouselCardCount(band.width);
+  const photos = Array.from({ length: count }, (_, i) => LANDING_PHOTOS[i % LANDING_PHOTOS.length]);
   const cards = useRef<(HTMLDivElement | null)[]>([]);
   const icons = useRef<(HTMLButtonElement | null)[]>([]);
   const st = useRef({ pos: 0, vel: 0, drag: false, lastX: 0, lastT: 0, moved: 0, focus: false });
-  const cfg = useRef({ scale, band, reduced });
-  cfg.current = { scale, band, reduced };
+  const cfg = useRef({ scale, band, reduced, count });
+  cfg.current = { scale, band, reduced, count };
 
   useEffect(() => {
     let raf = 0, prev = performance.now();
     const frame = (now: number) => {
       const dt = Math.min(0.05, (now - prev) / 1000);
       prev = now;
-      const s = st.current, { band: b, reduced: rm } = cfg.current;
+      const s = st.current, { band: b, reduced: rm, count: n } = cfg.current;
+      const loop = n * PITCH;
       if (!s.drag) {
         if (Math.abs(s.vel) > 2) {
           s.pos += s.vel * dt;
@@ -65,12 +55,17 @@ export function CurvedCarousel({ scale, band, onPick, reduced, className = '' }:
           if (!rm && !s.focus) s.pos += AUTO * dt;
         }
       }
-      for (let i = 0; i < N; i++) {
+      s.pos = ((s.pos % loop) + loop) % loop;
+      for (let i = 0; i < n; i++) {
         const el = cards.current[i];
         if (!el) continue;
-        let t = (((i * PITCH - s.pos) % LOOP) + LOOP) % LOOP;
-        if (t > LOOP / 2) t -= LOOP;
-        const g = geo(t);
+        let t = (((i * PITCH - s.pos) % loop) + loop) % loop;
+        if (t > loop / 2) t -= loop;
+        if (Math.abs(t) > b.width / 2 + 2 * PITCH) {
+          el.style.visibility = 'hidden';
+          continue;
+        }
+        const g = carouselGeometry(t, b.width);
         const visible = g.xr > b.left - 20 && g.xl < b.left + b.width + 20;
         el.style.visibility = visible ? 'visible' : 'hidden';
         if (!visible) continue;
@@ -122,7 +117,7 @@ export function CurvedCarousel({ scale, band, onPick, reduced, className = '' }:
   return (
     <div
       className={'carousel ' + className}
-      style={{ width: band.width * scale, height: band.height * scale }}
+      style={{ width: '100vw', height: band.height * scale }}
       role="region" aria-roledescription="carousel" aria-label="Photos from UAE events. Drag, or use arrow keys."
       tabIndex={0} onKeyDown={key}
       onFocus={(e) => { st.current.focus = e.target.matches(':focus-visible'); }} onBlur={() => { st.current.focus = false; }}
@@ -132,7 +127,7 @@ export function CurvedCarousel({ scale, band, onPick, reduced, className = '' }:
       data-testid="carousel-photos"
     >
       <div className="carousel-layer" style={{ width: band.width, height: band.height, transform: `scale(${scale})` }}>
-        {LANDING_PHOTOS.map((p, i) => (
+        {photos.map((p, i) => (
           <div key={i} ref={(el) => { cards.current[i] = el; }} className="carousel-card" data-testid={`card-photo-${i}`}>
             <img src={p.src} alt={p.label + ' photo'} draggable={false} />
             <button ref={(el) => { icons.current[i] = el; }} className="carousel-dl" aria-label={`Download ${p.label} photo`}

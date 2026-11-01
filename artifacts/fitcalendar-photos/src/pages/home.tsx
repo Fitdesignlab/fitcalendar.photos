@@ -70,8 +70,16 @@ export default function Home() {
   }
 
   const u = Math.min(w / 1440, h / 1080);
+  const cardScale = Math.min(u, 1);
+  const bandWidth = w / cardScale;
+  const bandTop = (h - 1080 * u) / 2 + 687 * u - 227 * cardScale;
   return (
     <div className="lp lp-stage" data-testid="page-home">
+      <div className="lp-carousel-bleed" style={{ top: bandTop }}>
+        <div className="e-row">
+          <CurvedCarousel scale={cardScale} band={{ left: 720 - bandWidth / 2, top: 460, width: bandWidth, height: 430 }} onPick={go} reduced={reduced} />
+        </div>
+      </div>
       <div className="lp-frame" style={{ transform: `translate(-50%, -50%) scale(${u})` }}>
         <header className="e-drop">
           <Link href="/" aria-label="FitCalendar Photos home" className="lp-home lp-abs rounded" style={{ left: 37, top: 36 }} data-testid="link-home"><FMark className="h-10 w-auto" /></Link>
@@ -86,9 +94,6 @@ export default function Home() {
         </h1>
         <p className="lp-sub e-sub lp-abs" style={{ top: 394, left: 400, width: 640, fontSize: 20.8, lineHeight: '32px' }}>{SUB}</p>
         <p className="lp-hand e-note lp-abs text-center" style={{ left: 1212, top: 310, fontSize: 36, lineHeight: '36px', transform: 'rotate(16deg)', transformOrigin: 'left top' }}>Be seen<br />with shots</p>
-        <div className="e-row lp-abs" style={{ left: 0, top: 460 }}>
-          <CurvedCarousel scale={1} band={{ left: 0, top: 460, width: 1440, height: 430 }} onPick={go} reduced={reduced} />
-        </div>
         <Doodles />
         <p className="lp-hand e-note lp-abs" style={{ left: 380, top: 922, fontSize: 32, transform: 'rotate(-14deg)' }}>Sign in to download</p>
         <div className="lp-ring e-cta lp-abs" style={{ left: 626, top: 901, width: 190, height: 74 }}>

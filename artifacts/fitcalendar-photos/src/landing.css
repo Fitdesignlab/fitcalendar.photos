@@ -1,6 +1,8 @@
 .lp { background: #fff; color: #000; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
 .lp-stage { position: relative; height: 100dvh; overflow: hidden; }
-.lp-frame { position: absolute; left: 50%; top: 50%; width: 1440px; height: 1080px; transform-origin: center center; }
+.lp-frame { position: absolute; left: 50%; top: 50%; width: 1440px; height: 1080px; transform-origin: center center; pointer-events: none; }
+.lp-frame a, .lp-frame button { pointer-events: auto; }
+.lp-carousel-bleed { position: absolute; left: 0; width: 100vw; }
 .lp-abs { position: absolute; }
 .lp-home img { filter: brightness(0); }
 .lp-pill { display: inline-flex; align-items: center; justify-content: center; border-radius: 999px; font: 500 15px/1 'Inter', sans-serif; transition: transform .2s cubic-bezier(.2,.7,.1,1), background-color .2s, opacity .2s; }
