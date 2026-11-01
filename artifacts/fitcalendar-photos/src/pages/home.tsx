@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'wouter';
 import { LogoLockup } from '@/components/logo-lockup';
+import { PhotosWordmark } from '@/components/photos-wordmark';
 import { CurvedCarousel } from '@/components/curved-carousel';
 import { useAuth } from '@/context/auth';
 
@@ -59,7 +60,7 @@ export default function Home() {
     return (
       <div className="lp lpm" data-testid="page-home">
         <header className="lpm-head e-drop">
-          <Link href="/" aria-label="FitCalendar Photos home" className="lp-home rounded" data-testid="link-home"><LogoLockup className="text-[26px]" /></Link>
+          <Link href="/" aria-label="FitCalendar Photos home" className="lp-home rounded" data-testid="link-home"><PhotosWordmark /></Link>
           <button onClick={go} className="lp-pill lp-signup" style={{ width: 92, height: 40 }} data-testid="button-signup">Sign up</button>
         </header>
         <span className="lp-badge e-pop mt-8 px-4 py-1.5 text-[14px]" data-testid="text-badge">Trusted by UAE movers</span>
@@ -92,7 +93,7 @@ export default function Home() {
       </div>
       <div className="lp-frame" style={{ transform: `translate(-50%, -50%) scale(${u})` }}>
         <header className="e-drop">
-          <Link href="/" aria-label="FitCalendar Photos home" className="lp-home lp-abs rounded" style={{ left: 37, top: 36 }} data-testid="link-home"><LogoLockup /></Link>
+          <Link href="/" aria-label="FitCalendar Photos home" className="lp-home lp-abs rounded" style={{ left: 37, top: 36 }} data-testid="link-home"><PhotosWordmark /></Link>
           <button onClick={go} className="lp-pill lp-login lp-abs" style={{ left: 1211, top: 29, width: 92, height: 40 }} data-testid="button-login">Log in</button>
           <button onClick={go} className="lp-pill lp-signup lp-abs" style={{ left: 1304, top: 29, width: 97, height: 40 }} data-testid="button-signup">Sign up</button>
         </header>
