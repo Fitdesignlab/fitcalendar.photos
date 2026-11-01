@@ -6,7 +6,7 @@
 .lp-abs { position: absolute; }
 .lp-home img { filter: brightness(0); }
 .lp-pill { display: inline-flex; align-items: center; justify-content: center; border-radius: 999px; font: 500 15px/1 'Inter', sans-serif; transition: transform .2s cubic-bezier(.2,.7,.1,1), background-color .2s, opacity .2s; }
-.lp-pill:focus-visible, .lp-cta:focus-visible, .carousel:focus-visible, .carousel-dl:focus-visible, .lp-home:focus-visible { outline: 2px solid #000; outline-offset: 3px; }
+.lp-pill:focus-visible, .carousel:focus-visible, .carousel-dl:focus-visible, .lp-home:focus-visible { outline: 2px solid #000; outline-offset: 3px; }
 .lp-pill:active, .lp-cta:active { transform: scale(.97); }
 .lp-login { background: #fff; color: #000; border: 1px solid #E3E3E3; }
 .lp-login:hover { border-color: #000; }
@@ -17,9 +17,11 @@
 .lp-h1 span { display: block; }
 .lp-sub { color: #5E5E61; text-align: center; }
 .lp-hand { font-family: 'Caveat', cursive; font-weight: 600; color: #0A0A0A; white-space: nowrap; line-height: 1; }
-.lp-ring { border: 1.6px dashed #0A0A0A; border-radius: 999px; display: flex; align-items: center; justify-content: center; }
+.lp-cta-wrap { display: flex; align-items: center; justify-content: center; }
 .lp-cta { display: flex; align-items: center; justify-content: center; border-radius: 999px; background: #0A0A0A; color: #fff; font: 600 17px/1 'Inter', sans-serif; transition: transform .2s cubic-bezier(.2,.7,.1,1), opacity .2s; }
+.lp-cta:focus-visible { outline: none; text-decoration: underline; text-underline-offset: 4px; }
 .lp-cta:hover { opacity: .88; }
+.lp-powered { display: flex; flex-direction: column; align-items: center; gap: 3px; }
 .lp-doodle path { fill: none; stroke: #0A0A0A; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
 
 .carousel { position: relative; overflow: hidden; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
@@ -51,6 +53,6 @@
 }
 
 /* phone */
-.lpm { min-height: 100dvh; display: flex; flex-direction: column; align-items: center; padding: 18px 0 28px; }
+.lpm { min-height: 100dvh; display: flex; flex-direction: column; align-items: center; padding: 18px 0 28px; overflow-x: clip; }
 .lpm-head { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
 .lpm-h1 { font-size: clamp(38px, 11vw, 56px); line-height: 1.04; }

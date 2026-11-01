@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'wouter';
-import { FMark } from '@/components/f-mark';
+import { LogoLockup } from '@/components/logo-lockup';
 import { CurvedCarousel } from '@/components/curved-carousel';
 import { useAuth } from '@/context/auth';
 
@@ -26,6 +26,15 @@ function useReducedMotion() {
 
 const SUB = 'Find every shot from the race, the padel night, or the festival, then download them after you sign in.';
 
+function PoweredBy({ className = '' }: { className?: string }) {
+  return (
+    <footer className={'lp-powered ' + className} data-testid="footer-powered-by">
+      <span className="text-[11px] leading-4 text-[#6E6E73]">Powered by</span>
+      <LogoLockup className="text-[15px]" />
+    </footer>
+  );
+}
+
 function Doodles() {
   return (
     <svg className="lp-abs lp-doodle e-draw pointer-events-none" width={1440} height={1080} viewBox="0 0 1440 1080" aria-hidden style={{ left: 0, top: 0 }}>
@@ -50,7 +59,7 @@ export default function Home() {
     return (
       <div className="lp lpm" data-testid="page-home">
         <header className="lpm-head e-drop">
-          <Link href="/" aria-label="FitCalendar Photos home" className="lp-home rounded" data-testid="link-home"><FMark className="h-9 w-auto" /></Link>
+          <Link href="/" aria-label="FitCalendar Photos home" className="lp-home rounded" data-testid="link-home"><LogoLockup className="text-[26px]" /></Link>
           <button onClick={go} className="lp-pill lp-signup" style={{ width: 92, height: 40 }} data-testid="button-signup">Sign up</button>
         </header>
         <span className="lp-badge e-pop mt-8 px-4 py-1.5 text-[14px]" data-testid="text-badge">Trusted by UAE movers</span>
@@ -60,11 +69,12 @@ export default function Home() {
           <CurvedCarousel scale={s} band={{ left: 400, top: 680 - units / 2, width: 640, height: units }} onPick={go} reduced={reduced} />
         </div>
         <div className="mt-auto flex flex-col items-center pt-7">
-          <div className="lp-ring e-cta" style={{ width: 190, height: 74 }}>
+          <div className="lp-cta-wrap e-cta" style={{ width: 190, height: 74 }}>
             <button onClick={go} className="lp-cta" style={{ width: 172, height: 58 }} data-testid="button-get-photos">Get your photos</button>
           </div>
           <p className="lp-hand e-note mt-3 text-[26px]" style={{ transform: 'rotate(-4deg)' }}>Sign in to download</p>
         </div>
+        <PoweredBy className="mt-5" />
       </div>
     );
   }
@@ -82,7 +92,7 @@ export default function Home() {
       </div>
       <div className="lp-frame" style={{ transform: `translate(-50%, -50%) scale(${u})` }}>
         <header className="e-drop">
-          <Link href="/" aria-label="FitCalendar Photos home" className="lp-home lp-abs rounded" style={{ left: 37, top: 36 }} data-testid="link-home"><FMark className="h-10 w-auto" /></Link>
+          <Link href="/" aria-label="FitCalendar Photos home" className="lp-home lp-abs rounded" style={{ left: 37, top: 36 }} data-testid="link-home"><LogoLockup /></Link>
           <button onClick={go} className="lp-pill lp-login lp-abs" style={{ left: 1211, top: 29, width: 92, height: 40 }} data-testid="button-login">Log in</button>
           <button onClick={go} className="lp-pill lp-signup lp-abs" style={{ left: 1304, top: 29, width: 97, height: 40 }} data-testid="button-signup">Sign up</button>
         </header>
@@ -96,8 +106,11 @@ export default function Home() {
         <p className="lp-hand e-note lp-abs text-center" style={{ left: 1212, top: 310, fontSize: 36, lineHeight: '36px', transform: 'rotate(16deg)', transformOrigin: 'left top' }}>Be seen<br />with shots</p>
         <Doodles />
         <p className="lp-hand e-note lp-abs" style={{ left: 380, top: 922, fontSize: 32, transform: 'rotate(-14deg)' }}>Sign in to download</p>
-        <div className="lp-ring e-cta lp-abs" style={{ left: 626, top: 901, width: 190, height: 74 }}>
+        <div className="lp-cta-wrap e-cta lp-abs" style={{ left: 626, top: 901, width: 190, height: 74 }}>
           <button onClick={go} className="lp-cta" style={{ width: 172, height: 58 }} data-testid="button-get-photos">Get your photos</button>
+        </div>
+        <div className="lp-abs w-full" style={{ left: 0, top: 1008 }}>
+          <PoweredBy />
         </div>
       </div>
     </div>
