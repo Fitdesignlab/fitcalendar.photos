@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'wouter';
-import { LogoLockup } from '@/components/logo-lockup';
+import { LandingFooter } from '@/components/landing-footer';
 import { PhotosWordmark } from '@/components/photos-wordmark';
 import { CurvedCarousel } from '@/components/curved-carousel';
 import { useAuth } from '@/context/auth';
@@ -27,15 +27,6 @@ function useReducedMotion() {
 
 const SUB = 'Find every shot from the race, the padel night, or the festival, then download them after you sign in.';
 
-function PoweredBy({ className = '' }: { className?: string }) {
-  return (
-    <footer className={'lp-powered ' + className} data-testid="footer-powered-by">
-      <span className="text-[11px] leading-4 text-[#6E6E73]">Powered by</span>
-      <LogoLockup className="text-[15px]" />
-    </footer>
-  );
-}
-
 function Doodles() {
   return (
     <svg className="lp-abs lp-doodle e-draw pointer-events-none" width={1440} height={1080} viewBox="0 0 1440 1080" aria-hidden style={{ left: 0, top: 0 }}>
@@ -58,6 +49,7 @@ export default function Home() {
     const s = w / 640;
     const units = 250 / s;
     return (
+      <>
       <div className="lp lpm" data-testid="page-home">
         <header className="lpm-head e-drop">
           <Link href="/" aria-label="FitCalendar Photos home" className="lp-home rounded" data-testid="link-home"><PhotosWordmark /></Link>
@@ -75,8 +67,9 @@ export default function Home() {
           </div>
           <p className="lp-hand e-note mt-3 text-[26px]" style={{ transform: 'rotate(-4deg)' }}>Sign in to download</p>
         </div>
-        <PoweredBy className="mt-5" />
       </div>
+      <LandingFooter />
+      </>
     );
   }
 
@@ -85,6 +78,7 @@ export default function Home() {
   const bandWidth = w / cardScale;
   const bandTop = (h - 1080 * u) / 2 + 687 * u - 227 * cardScale;
   return (
+    <>
     <div className="lp lp-stage" data-testid="page-home">
       <div className="lp-carousel-bleed" style={{ top: bandTop }}>
         <div className="e-row">
@@ -110,10 +104,9 @@ export default function Home() {
         <div className="lp-cta-wrap e-cta lp-abs" style={{ left: 626, top: 901, width: 190, height: 74 }}>
           <button onClick={go} className="lp-cta" style={{ width: 172, height: 58 }} data-testid="button-get-photos">Get your photos</button>
         </div>
-        <div className="lp-abs w-full" style={{ left: 0, top: 1008 }}>
-          <PoweredBy />
-        </div>
       </div>
     </div>
+    <LandingFooter />
+    </>
   );
 }

@@ -7,6 +7,7 @@ import NotFound from '@/pages/not-found';
 import Home from '@/pages/home';
 import EventPage from '@/pages/event';
 import EventsPage from '@/pages/events';
+import TermsPage from '@/pages/terms';
 import { AuthProvider } from '@/context/auth';
 import { SignInDialog } from '@/components/sign-in-dialog';
 import {
@@ -27,6 +28,7 @@ function Router() {
         <Route path="/" component={Home} />
         <Route path="/events" component={EventsPage} />
         <Route path="/event/:eventId" component={EventPage} />
+        <Route path="/terms" component={TermsPage} />
         <Route component={NotFound} />
       </Switch>
     </RoutedErrorBoundary>

@@ -16,6 +16,7 @@ export function GoogleSignIn() {
   useEffect(() => {
     let active = true;
     const abort = new AbortController();
+    let resize: ResizeObserver | undefined;
     setError('');
     setOrigins([]);
     setStatus('Loading Google sign-in...');
@@ -43,10 +44,21 @@ export function GoogleSignIn() {
           },
         });
         // This is Google's official button, not an imitation or invisible overlay.
-        google.accounts.id.renderButton(element, {
-          type: 'standard', theme: 'outline', size: 'large', text: 'continue_with', shape: 'pill',
-          width: Math.min(320, element.clientWidth || 320), logo_alignment: 'left',
-        });
+        let renderedWidth = 0;
+        const render = () => {
+          if (!active) return;
+          const width = Math.min(320, Math.floor(element.clientWidth));
+          if (!width || width === renderedWidth) return;
+          renderedWidth = width;
+          element.replaceChildren();
+          google.accounts.id.renderButton(element, {
+            type: 'standard', theme: 'outline', size: 'large', text: 'continue_with', shape: 'pill',
+            width, logo_alignment: 'left',
+          });
+        };
+        resize = new ResizeObserver(render);
+        resize.observe(element);
+        render();
         setStatus('');
       } catch {
         if (active) {
@@ -55,12 +67,12 @@ export function GoogleSignIn() {
         }
       }
     })();
-    return () => { active = false; abort.abort(); element?.replaceChildren(); };
+    return () => { active = false; abort.abort(); resize?.disconnect(); element?.replaceChildren(); };
   }, [attempt]);
 
   return (
-    <div className="space-y-3">
-      <div ref={button} className={signingIn ? 'pointer-events-none flex min-h-11 justify-center opacity-50' : 'flex min-h-11 justify-center'} data-testid="button-signin-google" />
+    <div className="min-w-0 w-full space-y-3">
+      <div ref={button} className={signingIn ? 'pointer-events-none flex min-h-10 min-w-0 w-full justify-center opacity-50' : 'flex min-h-10 min-w-0 w-full justify-center'} data-testid="button-signin-google" />
       {(status || signingIn) && <p role="status" className="text-center text-sm text-[#6E6E73]">{signingIn ? 'Verifying your Google account...' : status}</p>}
       {origins.length > 0 && <div className="rounded-2xl bg-[#F5F5F5] p-4 text-sm leading-6 text-[#5E5E61]" data-testid="status-google-origin">
         Google sign-in is enabled on the published websites, not this preview. Open one to sign in:

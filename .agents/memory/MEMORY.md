@@ -1,3 +1,4 @@
 - [Publishing verification](publishing-verification.md) — distinguish a working Photos preview from the older API-only published build.
 - [Code generation compatibility](codegen-compatibility.md) — Orval can silently select React Query 4 when scanning the API-spec package; keep the generator aligned with the app.
 - [Wordmark provenance](wordmark-provenance.md) — current logo image is an export of the supplied-style wordmark, not an official Figma asset.
+- [Responsive GIS layout](gis-responsive-layout.md) — native Google button widths can hold a modal grid's minimum width; check inner overflow, not just outer bounds.
