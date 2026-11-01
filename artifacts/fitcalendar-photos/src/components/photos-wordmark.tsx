@@ -1,10 +1,7 @@
 export function PhotosWordmark({ className = '' }: { className?: string }) {
   return (
-    <img
-      src={`${import.meta.env.BASE_URL}brand/fitcalendar-photos-wordmark.svg`}
-      alt="FITCALENDAR.PHOTOS"
-      className={'photos-wordmark ' + className}
-      data-testid="photos-wordmark"
-    />
+    <span className={'photos-wordmark ' + className} role="img" aria-label="FITCALENDAR.PHOTOS" data-testid="photos-wordmark">
+      <img src={`${import.meta.env.BASE_URL}fitcalendar-photos-wordmark.svg`} className="photos-wordmark-image" alt="" aria-hidden="true" />
+    </span>
   );
 }
