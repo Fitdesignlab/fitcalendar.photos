@@ -58,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setDownloadingId(photo.id);
     try {
       await downloadPhoto(photo, eventId);
-      toast({ title: 'Download started', description: `${photo.caption} (sample photo)` });
+      toast({ title: 'Download started', description: photo.caption });
     } catch (error) {
       if (statusOf(error) === 401) {
         cache.setQueryData<AuthSession>(getGetAuthSessionQueryKey(), { user: null });

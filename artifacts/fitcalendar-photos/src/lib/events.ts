@@ -22,10 +22,14 @@ export interface PhotoEvent {
   photos: EventPhoto[];
 }
 
-// Files prefixed with "landing/" resolve to public/landing; anything else stays in public/photos.
-export const photoUrl = (file: string) =>
-  file.startsWith('https://') ? file :
-    file.startsWith('landing/') ? `${import.meta.env.BASE_URL}${file}` : `${import.meta.env.BASE_URL}photos/${file}`;
+// Files prefixed with "landing/" resolve to public/landing; uploads are admin photos served by the API.
+export const photoUrl = (file: string) => {
+  const upload = /^uploads\/([a-z0-9-]+)\/([a-f0-9]{24})$/.exec(file);
+  if (upload) return `/api/events/${upload[1]}/photos/${upload[2]}/file`;
+  if (file.startsWith('https://')) return file;
+  if (file.startsWith('landing/')) return `${import.meta.env.BASE_URL}${file}`;
+  return `${import.meta.env.BASE_URL}photos/${file}`;
+};
 
 export const CATEGORY_LABEL: Record<Category, string> = {
   race: 'Race',
@@ -36,6 +40,7 @@ export const CATEGORY_LABEL: Record<Category, string> = {
   pilates: 'Pilates',
 };
 
+// The public catalogue is Fit Calendar event 369 only.
 export const EVENTS: PhotoEvent[] = [
   {
     id: '369',
@@ -50,7 +55,7 @@ export const EVENTS: PhotoEvent[] = [
   },
 ];
 
-export const getEvent = (id: string) => EVENTS.find((e) => e.id === id);
+export const getEvent = (id: string) => id === '369' ? EVENTS.find((e) => e.id === '369') : undefined;
 
 export const formatDate = (iso: string) =>
   new Date(iso + 'T12:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });

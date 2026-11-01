@@ -1,11 +1,15 @@
 import { useMemo, useState, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useParams } from 'wouter';
 import { ArrowLeft, CalendarDays, Camera, Lock, MapPin, Search } from 'lucide-react';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
 import { PhotoGrid } from '@/components/photo-grid';
 import { Lightbox } from '@/components/lightbox';
+import { AdminUpload } from '@/components/admin-upload';
 import { CATEGORY_LABEL, formatDate, getEvent, photoUrl } from '@/lib/events';
+import { isAdmin, LIVE_EVENT_ID } from '@/lib/admin';
+import { deleteEventPhoto, fetchEventPhotos } from '@/lib/gallery';
 import { useAuth } from '@/context/auth';
 import { usePageMeta } from '@/lib/use-page-meta';
 
@@ -15,6 +19,12 @@ export default function EventPage() {
   const { eventId = '' } = useParams<{ eventId: string }>();
   const event = getEvent(eventId);
   const { user, openSignIn } = useAuth();
+  const cache = useQueryClient();
+  const gallery = useQuery({
+    queryKey: ['event-photos', eventId],
+    queryFn: () => fetchEventPhotos(eventId),
+    enabled: eventId === LIVE_EVENT_ID,
+  });
   const [tag, setTag] = useState('all');
   const [bib, setBib] = useState('');
   const [open, setOpen] = useState<number | null>(null);
@@ -25,10 +35,15 @@ export default function EventPage() {
     event ? 'Event photo gallery for ' + event.name + ', ' + event.city + ', ' + formatDate(event.date) + '.' : 'This event could not be found. Browse available events.',
   );
 
-  const tags = useMemo(() => Array.from(new Set(event?.photos.flatMap((p) => p.tags) ?? [])), [event]);
-  const photos = useMemo(() => (event?.photos ?? []).filter((p) =>
+  const uploaded = event?.id === LIVE_EVENT_ID ? (gallery.data ?? []) : [];
+  const tags = useMemo(() => Array.from(new Set(uploaded.flatMap((p) => p.tags))), [uploaded]);
+  const photos = useMemo(() => uploaded.filter((p) =>
     (tag === 'all' || p.tags.includes(tag)) &&
-    (!bib.trim() || (p.bib ?? '').includes(bib.trim()) || p.photographer.toLowerCase().includes(bib.trim().toLowerCase()))), [event, tag, bib]);
+    (!bib.trim() || (p.bib ?? '').includes(bib.trim()) || p.photographer.toLowerCase().includes(bib.trim().toLowerCase()))), [uploaded, tag, bib]);
+  const removePhoto = useCallback(async (id: string) => {
+    await deleteEventPhoto(eventId, id);
+    await cache.invalidateQueries({ queryKey: ['event-photos', eventId] });
+  }, [cache, eventId]);
 
   if (!event) {
     return (
@@ -71,14 +86,18 @@ export default function EventPage() {
           </div>
         </section>
 
-        {!user && event.photos.length > 0 && (
+        {isAdmin(user) && <AdminUpload eventId={event.id} />}
+
+        {!user && uploaded.length > 0 && (
           <div className="mt-12 flex flex-col gap-4 rounded-[28px] bg-[#F5F5F5] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
             <p className="flex items-center gap-3 text-[15px] text-[#5E5E61]"><Lock className="h-4 w-4 shrink-0 text-[#101410]" aria-hidden /> Browse everything. Sign in with Google to download photos.</p>
             <button onClick={() => openSignIn()} data-testid="button-banner-signin" className="h-11 shrink-0 rounded-full bg-black px-5 text-[14px] font-medium text-white hover:opacity-85">Log in</button>
           </div>
         )}
 
-        {event.photos.length === 0 ? (
+        {event.id === LIVE_EVENT_ID && gallery.isPending ? (
+          <p className="mt-12 text-[15px] text-[#6E6E73]" data-testid="status-gallery-loading">Loading photos</p>
+        ) : uploaded.length === 0 ? (
           <div className="mt-12 rounded-[28px] border border-dashed border-[#D9D9D9] px-6 py-20 text-center" data-testid="status-empty-gallery">
             <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#F2F2F2]"><Camera className="h-6 w-6" aria-hidden /></span>
             <p className="mt-5 font-[Inter_Tight] text-[32px] font-bold tracking-[-0.03em]">No photos available yet.</p>
@@ -103,7 +122,7 @@ export default function EventPage() {
             </div>
             <p className="mb-5 mt-6 text-[14px] text-[#6E6E73]" data-testid="text-photo-count">{photos.length} {photos.length === 1 ? 'photo' : 'photos'}</p>
             {photos.length ? (
-              <PhotoGrid key={tag + bib} photos={photos} eventId={event.id} onOpen={setOpen} />
+              <PhotoGrid key={tag + bib} photos={photos} eventId={event.id} onOpen={setOpen} onRemove={isAdmin(user) ? (id) => { void removePhoto(id); } : undefined} />
             ) : (
               <div className="rounded-[28px] bg-[#F5F5F5] px-6 py-16 text-center" data-testid="status-no-photos">
                 <p className="font-[Inter_Tight] text-[32px] font-bold tracking-[-0.03em]">No match in this gallery.</p>

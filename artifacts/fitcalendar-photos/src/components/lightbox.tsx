@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Download, Lock } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Lock } from 'lucide-react';
+import { GlassDownloadGlyph } from './glass-download-glyph';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import { photoUrl, type EventPhoto } from '@/lib/events';
 import { useAuth } from '@/context/auth';
@@ -37,12 +38,12 @@ export function Lightbox({ photos, index, eventId, onChange }: Props) {
               <div>
                 <DialogTitle className="font-[Inter_Tight] text-[22px] font-bold tracking-[-0.02em]">{p.caption}</DialogTitle>
                 <DialogDescription className="text-[13px] text-[#6E6E73]">
-                  Sample photo {index + 1} of {n} / {p.time}{p.bib ? ' / Bib ' + p.bib : ''} / by {p.photographer}
+                  Photo {index + 1} of {n} / {p.time}{p.bib ? ' / Bib ' + p.bib : ''} / by {p.photographer}
                 </DialogDescription>
               </div>
               <button onClick={() => requestDownload(p, eventId)} disabled={downloadingId === p.id} data-testid="button-lightbox-download"
                 className="inline-flex items-center justify-center gap-2 rounded-full h-12 bg-black px-6 text-[15px] font-medium text-white hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:opacity-60">
-                {user ? <Download className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
+                {user ? <GlassDownloadGlyph className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
                 {user ? (downloadingId === p.id ? 'Saving' : 'Download photo') : 'Sign in to download'}
               </button>
             </div>
